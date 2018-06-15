@@ -7,7 +7,8 @@
    <a href="https://www.npmjs.com/package/ve-calendar"><img src="https://img.shields.io/npm/dm/ve-calendar.svg?style=flat " alt="npm"></a>
  </p>
  
-[Chinese document](./README.ZH.MD)
+
+[中文文档](./README.ZH.MD)
 
 [English](./README.MD)
 
@@ -67,4 +68,4 @@ Change | selectedDate/array | Fired when the selected date changes, the paramete
 
 ## License
 
-[MIT] (https://github.com/pcloth/ve-calendar/blob/master/LICENSE)
+[MIT]

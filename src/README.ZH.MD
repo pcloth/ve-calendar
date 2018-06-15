@@ -67,4 +67,4 @@ change |  selectedDate/array | 选中日期发生改变时触发，参数是当�
 
 ## License
 
-[MIT](https://github.com/pcloth/ve-calendar/blob/master/LICENSE)
+[MIT]
