@@ -10,7 +10,6 @@
 
 [中文文档](./README.ZH.MD)
 
-[English](./README.MD)
 
 # Current function:
 >1, display the lunar calendar, solar terms, festivals before 2050
@@ -65,8 +64,8 @@ Change | selectedDate/array | Fired when the selected date changes, the paramete
 ## slot
 | Name | Parameter | Description |
 | --- | --- | --- |
-Day-number | day | is used to replace the default upper-left digit, day is the data object of the day |
-Day-lunar | day | It is used to replace the lunar calendar, festivals, and solar terms in the upper right corner. day is the data object of the day |
+day-number | day | is used to replace the default upper-left digit, day is the data object of the day |
+day-lunar | day | It is used to replace the lunar calendar, festivals, and solar terms in the upper right corner. day is the data object of the day |
 | day-event | day | Used to display functions such as to-do items, day is the data object of the day |
 
 
@@ -74,10 +73,10 @@ Day-lunar | day | It is used to replace the lunar calendar, festivals, and solar
 ``` html
 <ve-calendar v-model="selected" @change="refreshC" :off-days="test" :cross-month="false" >
    <div slot="day-number" slot-scope="{day}">
-     <span :style="s.sMonth===month&&test.indexOf(day.sDay)>=0?'color:red;':''">{{day.sDay}</span>
+     <span :style="s.sMonth===month && test.indexOf(day.sDay)>=0?'color:red;':''">{{day.sDay}</span>
    </div>
    <div slot="day-event" slot-scope="{day,click}">
-     <div v-if="day.sMonth===month&&test.indexOf(day.sDay)>=0">
+     <div v-if="day.sMonth===month && test.indexOf(day.sDay)>=0">
        <div v-for="item in 5" :key="item" @click="click(item)">To Do{{item}}</div>
      </div>
    </div>

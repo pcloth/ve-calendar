@@ -7,7 +7,6 @@
    <a href="https://www.npmjs.com/package/ve-calendar"><img src="https://img.shields.io/npm/dm/ve-calendar.svg?style=flat" alt="npm"></a>
  </p>
  
-[中文文档](./README.ZH.MD)
 
 [English](./README.MD)
 
