@@ -1,0 +1,18 @@
+{
+  "name": "ve-calendar",
+  "version": "0.0.2",
+  "description": "this easy calendar by vue",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "vue",
+    "easy",
+    "calendar",
+    "ve calendar",
+    "vue-easy-ui"
+  ],
+  "author": "pcloth",
+  "license": "MIT"
+}
