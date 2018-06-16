@@ -49,8 +49,9 @@ Parameter Name | Type | Default | Description
 ---- | --- | --- | ---
 Value | array | none | v-model binding value, is the current selected date list
 Activate-date | object | date of the year | contains two values ​​year current year, month current month
-Most-choice | number | 0 | up to choose the number of days, 0 infinity
+Most-choice | number | 0 | up to choose the number of days, 0 infinity. Negative number indicates prohibition of selection
 Cross-month | boolean | false | whether to allow cross-month selection
+| pick-mode | boolean | true | Pick mode: When true, the number of newly selected days exceeds the number of most-choice settings, and the oldest date will be discarded. When false, more than most-choice settings will no longer be selected 
 
 
 

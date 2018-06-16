@@ -129,10 +129,15 @@ export default {
                 };
             }
         },
+        pickMode:{
+            // 切换模式
+            type:Boolean,
+            default:true
+        },
         mostChoice: {
             // 最多选择日期数量,0无限
             type: Number,
-            default: 0
+            default: -1
         },
         crossMonth: {
             // 是否允许跨月选中
@@ -266,7 +271,9 @@ export default {
             // 点击某一天
             // console.log(row);
             if (
-                (this.mostChoice > 0 &&
+                // 非挑选切换模式下，超过最大选中项不再操作
+                this.mostChoice<0 ||
+                (this.pickMode===false && this.mostChoice > 0 &&
                     this.selectedDate.length >= this.mostChoice) ||
                 (this.crossMonth == false &&
                     this.currentMonth + 1 !== row.sMonth)
@@ -286,9 +293,13 @@ export default {
                 }
             } else {
                 // 如果之前没选中
-                if (row.selected === true) {
+                if (row.selected === true ) {
                     this.selectedDate.push(row.sDate);
                 }
+            }
+
+            if(this.pickMode===true && this.mostChoice > 0 && this.selectedDate.length > this.mostChoice){
+                this.selectedDate.splice(0,1)
             }
         },
         dayMouseDown(e, row, index) {
