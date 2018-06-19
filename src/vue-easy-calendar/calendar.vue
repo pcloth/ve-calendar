@@ -18,7 +18,7 @@
                 <div class="ve-button next" @click="nextMonth">
                     <i class="ve-icon icon-next"></i>
                 </div>
-                <div class="ve-button year" @click="yearEditMode=!yearEditMode">
+                <div class="ve-button year" >
                     <input v-model="currentYear" @input="changeYear" :min="1900" type="number" class="ve-year">
                     <span v-show="showErr" style="font-size: 12px;position: absolute;margin-left: 20px;color: rgba(1,1,1,0.3);">不支持</span>
                 </div>
@@ -33,7 +33,8 @@
                 <div class="days">
                     <div class="days-line" v-for="line in 6" :key="`line_${line}`">
                         <div class="day-grid" @mousedown="dayMouseDown($event,row,line*7-7+index)" @mousemove="dayMouseMove($event,row,line*7-7+index)" @mouseup="dayMouseUp($event,row,line*7-7+index)" :class="{ 
-                        disabled: row.sMonth!==(currentMonth+1) ,
+                        disabled: row.sMonth!==(currentMonth+1)&&crossMonth===true ,
+                        disabled2: row.sMonth!==(currentMonth+1)&&crossMonth===false,
                         selected: row.selected===true,
                         preview:row.preview === true,
                         today:row.sDay===today.getDate() && row.sMonth === (today.getMonth()+1) && row.sYear ===today.getFullYear(),
@@ -41,7 +42,7 @@
                             <div class="day-title">
                                 <div class="day-number">
                                     <slot name="day-number" :day="row">
-                                        {{row.sDay}}
+                                        <div :style="getHoliday(row)">{{row.sDay}}</div>
                                     </slot>
                                 </div>
                                 <div class="day-lunar" :style="`color:${row.color}`" :title="getLunar(row)">
@@ -52,12 +53,27 @@
                             </div>
                             <div class="day-content">
                                 <div class="day-event" @mouseenter="dayEventEnter" @mouseleave="dayEventLeave">
-                                    <slot name="day-event" :day="row" :click="clickEvent">
+                                    <slot name="day-event" :day="row" :popMenu="clickEvent">
                                     </slot>
                                 </div>
                             </div>
                         </div>
                     </div>
+                </div>
+                <div :class="dayEventMenu"
+                     v-show="eventMenuShow"
+                     :style="`top:${eventMenuTop}px;left:${eventMenuLeft}px;`">
+                        <slot  name="day-event-left-menu" :eventMenuShow="eventMenuShow" :currentEvent="currentEvent">
+                            <div :class="dayEventMenuItem">默认事件</div>
+                        </slot>
+                </div>
+
+                <div :class="dayEventMenu"
+                     v-show="eventRightMenuShow"
+                     :style="`top:${eventMenuTop}px;left:${eventMenuLeft}px;`">
+                    <slot name="day-event-right-menu" :eventRightMenuShow="eventRightMenuShow" :currentEvent="currentEvent">
+                        <div :class="dayEventMenuItem" @click="appendEvent">添加待办事项</div>
+                    </slot>
                 </div>
             </div>
         </div>
@@ -87,17 +103,7 @@ export default {
         defHolidayColor: {
             // 默认的节日颜色
             type: String,
-            default: "#F56C00"
-        },
-        defOffDayColor: {
-            // 默认的休息日颜色
-            type: String,
-            default: "#F56C00"
-        },
-        defSelectedBackColor: {
-            // 默认的选中背景色
-            type: String,
-            default: "#91c5f8"
+            default: "#E6A23C"
         },
         mode: {
             // 显示模型
@@ -111,6 +117,22 @@ export default {
                 return [];
             }
         },
+        dayEvent:{
+            //默认待办事项区域的class name
+            type:String,
+            default:"day-event"
+        },
+        dayEventMenu:{
+            //默认弹出菜单的class name
+            type:String,
+            default:"day-event-menu"
+        },
+        dayEventMenuItem:{
+            // 默认的弹出菜单子项目class name
+            type:String,
+            default:"day-event-menu-item"
+        },
+
         value: {
             // 选中日期列表
             type: Array,
@@ -134,10 +156,15 @@ export default {
             type:Boolean,
             default:true
         },
+        rightMenu:{
+            // 是否显示鼠标右键
+            type:Boolean,
+            default:true
+        },
         mostChoice: {
             // 最多选择日期数量,0无限
             type: Number,
-            default: -1
+            default: 0
         },
         crossMonth: {
             // 是否允许跨月选中
@@ -149,7 +176,6 @@ export default {
         return {
             weekTitleData: ["日", "一", "二", "三", "四", "五", "六"],
             monthData: [],
-            alldays: Array.from(new Array(42), (val, index) => index),
             today: new Date(),
             currentYear: this.activateDate.year,
             currentMonth: this.activateDate.month - 1,
@@ -158,15 +184,22 @@ export default {
             lastSelectedDate: this.value, // 上次选中的日期
             monthEditMode: false,
             yearEditMode: false,
-            // displayDropdownMonth: "display: none;", //显示下拉月份
             showErr: false, // 显示错误年份提示
             mouseLeftHold: false, // 鼠标左键按住
             mouseHoldIndex: 0, // 鼠标按住时候的数据索引
             mouseHoldLastIndex: -1, // 上一次的索引
-            mouseOverEventDiv: false //鼠标浮动在事件区域，禁用选择日期
+            mouseOverEventDiv: false, //鼠标浮动在事件区域，禁用选择日期
+            currentDay:null, // 当前天的数据对象
+            currentEvent:{}, //当前事件数据
+            eventMenuShow:false, // 左键菜单
+            eventRightMenuShow:false,// 右键菜单
+            eventMenuTop:0,
+            eventMenuLeft:0,
         };
     },
-    computed: {},
+    computed: {
+
+    },
     watch: {
         value() {
             this.selectedDate = this.value;
@@ -198,8 +231,16 @@ export default {
         initConfig() {
             window.document.addEventListener("mouseup", this.eventLinstenerMouseUp);
         },
-        eventLinstenerMouseUp(){
-            this.mouseLeftHold = false;
+        eventLinstenerMouseUp(e){
+            if(e.button===0) {
+                this.mouseLeftHold = false;
+                this.eventMenuShow = false;
+                this.eventRightMenuShow = false;
+            }
+            if(e.button===2){
+                this.mouseLeftHold = false;
+                this.eventMenuShow = false;
+            }
             this.dayMouseUp();
         },
 
@@ -233,39 +274,30 @@ export default {
                 (day.lDay == 1 ? day.lMonthChinese : day.lDayChinese)
             );
         },
-        getOffDayColor(day) {
-            // 获取休息日颜色
-            if (this.offDays.length > 0) {
-                return this.offDays.indexOf(day.sDay) >= 0
-                    ? `color:${this.defOffDayColor}`
-                    : "";
-            } else {
-                if (!day) {
-                    return "";
-                }
-                return day.week == "日" || day.week == "六"
-                    ? `color:${this.defOffDayColor}`
-                    : "";
-            }
-        },
+
         makeCalendar() {
             // 制作当前月份的日历数据
             let data = new lunar(this.currentYear, this.currentMonth);
+            this.monthData = this.combinedData(data);
+            this.checkSelected();
+            this.$emit("refresh-calendar", {
+                year: this.currentYear,
+                month: this.currentMonth + 1
+            },this.monthData);
+        },
+        combinedData(data) {
+            // 组合数据
             for (let i in data) {
                 if (typeof data[i] === "object") {
                     data[i].selected = false;
                     data[i].preview = false;
                 }
             }
-            this.monthData = data;
-            this.checkSelected();
-            this.$emit("refresh-calendar", {
-                year: this.currentYear,
-                month: this.currentMonth + 1
-            });
+            return data
         },
-        combinedData() {
-            // 组合数据
+        appendEvent(){
+            // 添加事件
+            this.$emit('append-event',this.currentEvent.day)
         },
         dayClick(row) {
             // 点击某一天
@@ -316,8 +348,11 @@ export default {
                 row.preview = true;
             }
             // 鼠标右键
-            if (e.button === 2) {
-                console.log("right", e);
+            if (e.button === 2 && this.rightMenu===true) {
+                this.currentEvent = {day:row}
+                this.eventMenuTop = e.y
+                this.eventMenuLeft = e.x
+                this.eventRightMenuShow = true
             }
         },
         dayMouseMove(e, row, index) {
@@ -342,9 +377,6 @@ export default {
                 }
             }
         },
-        calendarMouseLevae() {
-            console.log(11);
-        },
         dayEventEnter() {
             // 鼠标浮动在事件区域，禁用选择日期
             this.mouseOverEventDiv = true;
@@ -363,6 +395,15 @@ export default {
             // 确定月份
             this.currentMonth = m - 1;
             this.makeCalendar();
+        },
+        getHoliday(row){
+            // 获取假期
+            let color = "color:#F56C6C;"
+            if(this.offDays.length>0){
+                return this.offDays.indexOf(row.sDate)>=0?color:''
+            }else{
+                return (row.week=='六'|| row.week=='日')?color:''
+            }
         },
         changeYear() {
             // 改变年份
@@ -392,8 +433,17 @@ export default {
                 }
             }
         },
-        clickEvent(data) {
-            console.log("clickEvent", data);
+        clickEvent(e,data) {
+            if(typeof e !=="object" || (typeof data!=="object" && !data.day)){
+                return
+            }
+           
+            this.currentEvent = data
+            this.eventMenuTop = e.y
+            this.eventMenuLeft = e.x
+            this.eventMenuShow = true
+
+            this.$emit('click-event',e,data)
         }
     },
     beforeDestroy() {
@@ -474,7 +524,7 @@ input[type="number"].ve-year:hover::-webkit-inner-spin-button {
     margin-right: 10px;
 }
 .ve-button:hover {
-    background-color: #91c5f8;
+    background-color: #409EFF;
     border-radius: 3px;
 }
 
@@ -512,22 +562,51 @@ input[type="number"].ve-year:hover::-webkit-inner-spin-button {
     color: #c0c4cc;
 }
 
+.day-grid.disabled2 {
+    color: #c0c4cc;
+    pointer-events: none;
+}
+
+.day-event-menu {
+    background-color: #F2F6FC;
+    position: absolute;
+    z-index:9;
+    border-radius: 3px;
+    width:80px;
+    display: flex;
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.3);
+    flex-direction: column;
+    padding: 10px;
+    width: 200px;
+}
+
+.day-event-menu-item {
+    width: 100%;
+    height: 32px;
+    display: flex;
+    align-items: center;
+}
+.day-event-menu-item:hover {
+    background-color: #409EFF;
+    cursor: pointer;
+}
+
 .day-grid:hover {
     border: 1px solid #2d71b4;
-    /* background-color: #91c5f8; */
+    /* background-color: #409EFF; */
 }
 
 .day-grid.selected {
-    background-color: #91c5f8;
+    background-color: #409EFF;
 }
 
 .day-grid.preview {
-    background-color: #c7e3ff;
-    border: 1px solid #c7e3ff;
+    background-color: #E6A23C;
+    border: 1px solid #E6A23C;
 }
 
 .day-grid.today {
-    border: 1px solid #b42d8c;
+    border: 1px solid #F56C6C;
 }
 
 .day-title {
@@ -594,6 +673,6 @@ input[type="number"].ve-year:hover::-webkit-inner-spin-button {
 }
 
 .dropdown-content .dropdown-month:hover {
-    background-color: #91c5f8;
+    background-color: #409EFF;
 }
 </style>

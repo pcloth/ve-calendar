@@ -248,7 +248,7 @@ function cyclical(num) {
 function calElement(sYear, sMonth, sDay, week, lYear, lMonth, lDay, isLeap, cYear, cMonth, cDay) {
 
     this.isToday = false;
-    //瓣句
+    //阳历
     this.sYear = sYear;   //公元年4位数字
     this.sMonth = sMonth;  //公元月数字
     this.sDay = sDay;    //公元日数字
