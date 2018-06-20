@@ -1,6 +1,7 @@
 <template>
     <div id="app">
-        <ve-calendar v-model="selected" :crossMonth="true" @refresh-calendar="refreshC"  :off-days="test" :cross-month="false" @append-event="appendEvent"  @click-event="clickEvent" >
+        
+        <ve-calendar  v-model="selected"  :most-choice="0" @refresh-calendar="refreshC"  :off-days="test" :cross-month="false" @append-event="appendEvent"  @click-event="clickEvent" >
             <div slot="day-number" slot-scope="{day}">
                 <span :style="day.sMonth===month&&test.indexOf(day.sDay)>=0?'color:red;':''">{{day.sDay}}</span>
             </div>
@@ -16,11 +17,10 @@
                 <div @click="deleteEvent(currentEvent.item)" class="day-event-menu-item">delete event</div>
             </div>
 
-            <div slot="day-event-right-menu" slot-scope="{currentEvent,eventRightMenuShow}" >
-                <!-- 这里如果需要调用多重包装的数据，请放到v-if里面 -->
+            <!-- <div slot="day-event-right-menu" slot-scope="{currentEvent,eventRightMenuShow}" >
                 <div v-if="currentEvent.day">{{currentEvent.day.sDate}}</div>
                 <div class="day-event-menu-item">test</div>
-            </div>
+            </div> -->
 
         </ve-calendar>
         <button @click="refreshC(11)">测试</button>
@@ -34,29 +34,28 @@ export default {
     name: "App",
     data() {
         return {
-            activateDate:{
-                year:2017,
-                month:6
+            activateDate: {
+                year: 2017,
+                month: 6
             },
-            month:6,
-            test:[1],
-            selected:[]
+            month: 6,
+            test: [1],
+            selected: []
         };
     },
     methods: {
-
-        refreshC(yearmonth,data){
-            console.log(yearmonth,data);
-            data[2].selected = true
+        refreshC(yearmonth, data) {
+            console.log(yearmonth, data);
+            data[2].selected = true;
         },
-        clickEvent(e,data){
-            console.log(e,data)
+        clickEvent(e, data) {
+            console.log(e, data);
         },
-        deleteEvent(item){
-            console.log(`你打算删除事情${item}`)
+        deleteEvent(item) {
+            console.log(`你打算删除事情${item}`);
         },
-        appendEvent(day){
-            console.log('appendEvent',day)
+        appendEvent(day) {
+            console.log("appendEvent", day);
         }
     },
     mounted() {},

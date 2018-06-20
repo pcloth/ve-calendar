@@ -8,9 +8,9 @@
                 <div class="ve-button month">
                     <div style="width:100%;">
                         <div class="dropdown" style="width:100%;text-align: center;">
-                            <span>{{currentMonth+1}}月</span>
+                            <span>{{language(`${currentMonth+1}月`)}}</span>
                             <div class="dropdown-content">
-                                <div class="dropdown-month" :class="{activated:m==(currentMonth+1)}" v-for="m in 12" :key="`dropdown_m${m}`" @click="gotoMonth(m)">{{m}}月</div>
+                                <div class="dropdown-month" :class="{activated:m==(currentMonth+1)}" v-for="m in 12" :key="`dropdown_m${m}`" @click="gotoMonth(m)">{{language(`${m}月`)}}</div>
                             </div>
                         </div>
                     </div>
@@ -20,15 +20,15 @@
                 </div>
                 <div class="ve-button year" >
                     <input v-model="currentYear" @input="changeYear" :min="1900" type="number" class="ve-year">
-                    <span v-show="showErr" style="font-size: 12px;position: absolute;margin-left: 20px;color: rgba(1,1,1,0.3);">不支持</span>
+                    <span v-show="showErr" style="font-size: 12px;position: absolute;margin-left: 20px;color: rgba(1,1,1,0.3);">{{language('不支持')}}</span>
                 </div>
 
-                <div class="ve-button today" @click="goToday">今天</div>
+                <div class="ve-button today" @click="goToday">{{language('今天')}}</div>
 
             </div>
             <div class="body">
                 <div class="week-title">
-                    <div class="title-grid" v-for="week in weekTitleData" :key="week">{{week}}</div>
+                    <div class="title-grid" v-for="week in weekTitleData" :key="week">{{language(week)}}</div>
                 </div>
                 <div class="days">
                     <div class="days-line" v-for="line in 6" :key="`line_${line}`">
@@ -47,7 +47,8 @@
                                 </div>
                                 <div class="day-lunar" :style="`color:${row.color}`" :title="getLunar(row)">
                                     <slot name="day-lunar" :day="row">
-                                        {{row.solarTerms||getLunar(row)}}
+                                        <span v-if="lang==='zh-cn'">{{row.solarTerms||getLunar(row)}}</span>
+                                        
                                     </slot>
                                 </div>
                             </div>
@@ -85,7 +86,10 @@
 
 <script>
 import lunar from "./js/lunar";
+import english from "./js/language";
+
 import Vue from "vue";
+
 Vue.directive("menu", {
     // 屏蔽右键菜单
     inserted: function(target) {
@@ -117,20 +121,20 @@ export default {
                 return [];
             }
         },
-        dayEvent:{
+        dayEvent: {
             //默认待办事项区域的class name
-            type:String,
-            default:"day-event"
+            type: String,
+            default: "day-event"
         },
-        dayEventMenu:{
+        dayEventMenu: {
             //默认弹出菜单的class name
-            type:String,
-            default:"day-event-menu"
+            type: String,
+            default: "day-event-menu"
         },
-        dayEventMenuItem:{
+        dayEventMenuItem: {
             // 默认的弹出菜单子项目class name
-            type:String,
-            default:"day-event-menu-item"
+            type: String,
+            default: "day-event-menu-item"
         },
 
         value: {
@@ -151,15 +155,15 @@ export default {
                 };
             }
         },
-        pickMode:{
+        pickMode: {
             // 切换模式
-            type:Boolean,
-            default:true
+            type: Boolean,
+            default: true
         },
-        rightMenu:{
+        rightMenu: {
             // 是否显示鼠标右键
-            type:Boolean,
-            default:true
+            type: Boolean,
+            default: true
         },
         mostChoice: {
             // 最多选择日期数量,0无限
@@ -170,6 +174,10 @@ export default {
             // 是否允许跨月选中
             type: Boolean,
             default: false
+        },
+        lang: {
+            type: String,
+            default: "zh-cn"
         }
     },
     data() {
@@ -189,17 +197,15 @@ export default {
             mouseHoldIndex: 0, // 鼠标按住时候的数据索引
             mouseHoldLastIndex: -1, // 上一次的索引
             mouseOverEventDiv: false, //鼠标浮动在事件区域，禁用选择日期
-            currentDay:null, // 当前天的数据对象
-            currentEvent:{}, //当前事件数据
-            eventMenuShow:false, // 左键菜单
-            eventRightMenuShow:false,// 右键菜单
-            eventMenuTop:0,
-            eventMenuLeft:0,
+            currentDay: null, // 当前天的数据对象
+            currentEvent: {}, //当前事件数据
+            eventMenuShow: false, // 左键菜单
+            eventRightMenuShow: false, // 右键菜单
+            eventMenuTop: 0,
+            eventMenuLeft: 0
         };
     },
-    computed: {
-
-    },
+    computed: {},
     watch: {
         value() {
             this.selectedDate = this.value;
@@ -229,15 +235,26 @@ export default {
             this.makeCalendar(); //制作日历数据
         },
         initConfig() {
-            window.document.addEventListener("mouseup", this.eventLinstenerMouseUp);
+            window.document.addEventListener(
+                "mouseup",
+                this.eventLinstenerMouseUp
+            );
         },
-        eventLinstenerMouseUp(e){
-            if(e.button===0) {
+        language(text) {
+            // 简易英文支持
+            if (this.lang === "en" && english[text]) {
+                return english[text];
+            } else {
+                return text;
+            }
+        },
+        eventLinstenerMouseUp(e) {
+            if (e.button === 0) {
                 this.mouseLeftHold = false;
                 this.eventMenuShow = false;
                 this.eventRightMenuShow = false;
             }
-            if(e.button===2){
+            if (e.button === 2) {
                 this.mouseLeftHold = false;
                 this.eventMenuShow = false;
             }
@@ -280,10 +297,14 @@ export default {
             let data = new lunar(this.currentYear, this.currentMonth);
             this.monthData = this.combinedData(data);
             this.checkSelected();
-            this.$emit("refresh-calendar", {
-                year: this.currentYear,
-                month: this.currentMonth + 1
-            },this.monthData);
+            this.$emit(
+                "refresh-calendar",
+                {
+                    year: this.currentYear,
+                    month: this.currentMonth + 1
+                },
+                this.monthData
+            );
         },
         combinedData(data) {
             // 组合数据
@@ -293,19 +314,20 @@ export default {
                     data[i].preview = false;
                 }
             }
-            return data
+            return data;
         },
-        appendEvent(){
+        appendEvent() {
             // 添加事件
-            this.$emit('append-event',this.currentEvent.day)
+            this.$emit("append-event", this.currentEvent.day);
         },
         dayClick(row) {
             // 点击某一天
             // console.log(row);
             if (
                 // 非挑选切换模式下，超过最大选中项不再操作
-                this.mostChoice<0 ||
-                (this.pickMode===false && this.mostChoice > 0 &&
+                this.mostChoice < 0 ||
+                (this.pickMode === false &&
+                    this.mostChoice > 0 &&
                     this.selectedDate.length >= this.mostChoice) ||
                 (this.crossMonth == false &&
                     this.currentMonth + 1 !== row.sMonth)
@@ -325,13 +347,17 @@ export default {
                 }
             } else {
                 // 如果之前没选中
-                if (row.selected === true ) {
+                if (row.selected === true) {
                     this.selectedDate.push(row.sDate);
                 }
             }
 
-            if(this.pickMode===true && this.mostChoice > 0 && this.selectedDate.length > this.mostChoice){
-                this.selectedDate.splice(0,1)
+            if (
+                this.pickMode === true &&
+                this.mostChoice > 0 &&
+                this.selectedDate.length > this.mostChoice
+            ) {
+                this.selectedDate.splice(0, 1);
             }
         },
         dayMouseDown(e, row, index) {
@@ -343,16 +369,21 @@ export default {
                 ) {
                     return;
                 }
+
+                if (this.mostChoice < 0) {
+                    return;
+                }
                 this.mouseLeftHold = true;
                 this.mouseHoldIndex = index;
                 row.preview = true;
             }
             // 鼠标右键
-            if (e.button === 2 && this.rightMenu===true) {
-                this.currentEvent = {day:row}
-                this.eventMenuTop = e.y
-                this.eventMenuLeft = e.x
-                this.eventRightMenuShow = true
+            if (e.button === 2 && this.rightMenu === true) {
+                console.log(e);
+                this.currentEvent = { day: row };
+                this.eventMenuTop = e.y;
+                this.eventMenuLeft = e.x;
+                this.eventRightMenuShow = true;
             }
         },
         dayMouseMove(e, row, index) {
@@ -396,13 +427,13 @@ export default {
             this.currentMonth = m - 1;
             this.makeCalendar();
         },
-        getHoliday(row){
+        getHoliday(row) {
             // 获取假期
-            let color = "color:#F56C6C;"
-            if(this.offDays.length>0){
-                return this.offDays.indexOf(row.sDate)>=0?color:''
-            }else{
-                return (row.week=='六'|| row.week=='日')?color:''
+            let color = "color:#F56C6C;";
+            if (this.offDays.length > 0) {
+                return this.offDays.indexOf(row.sDate) >= 0 ? color : "";
+            } else {
+                return row.week == "六" || row.week == "日" ? color : "";
             }
         },
         changeYear() {
@@ -433,21 +464,27 @@ export default {
                 }
             }
         },
-        clickEvent(e,data) {
-            if(typeof e !=="object" || (typeof data!=="object" && !data.day)){
-                return
+        clickEvent(e, data) {
+            if (
+                typeof e !== "object" ||
+                (typeof data !== "object" && !data.day)
+            ) {
+                return;
             }
-           
-            this.currentEvent = data
-            this.eventMenuTop = e.y
-            this.eventMenuLeft = e.x
-            this.eventMenuShow = true
 
-            this.$emit('click-event',e,data)
+            this.currentEvent = data;
+            this.eventMenuTop = e.y;
+            this.eventMenuLeft = e.x;
+            this.eventMenuShow = true;
+
+            this.$emit("click-event", e, data);
         }
     },
     beforeDestroy() {
-        window.document.removeEventListener("mouseup", this.eventLinstenerMouseUp);
+        window.document.removeEventListener(
+            "mouseup",
+            this.eventLinstenerMouseUp
+        );
     },
     components: {}
 };
@@ -524,7 +561,7 @@ input[type="number"].ve-year:hover::-webkit-inner-spin-button {
     margin-right: 10px;
 }
 .ve-button:hover {
-    background-color: #409EFF;
+    background-color: #409eff;
     border-radius: 3px;
 }
 
@@ -568,11 +605,11 @@ input[type="number"].ve-year:hover::-webkit-inner-spin-button {
 }
 
 .day-event-menu {
-    background-color: #F2F6FC;
-    position: absolute;
-    z-index:9;
+    background-color: #f2f6fc;
+    position: fixed;
+    z-index: 9;
     border-radius: 3px;
-    width:80px;
+    width: 80px;
     display: flex;
     box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.3);
     flex-direction: column;
@@ -587,7 +624,7 @@ input[type="number"].ve-year:hover::-webkit-inner-spin-button {
     align-items: center;
 }
 .day-event-menu-item:hover {
-    background-color: #409EFF;
+    background-color: #409eff;
     cursor: pointer;
 }
 
@@ -597,16 +634,16 @@ input[type="number"].ve-year:hover::-webkit-inner-spin-button {
 }
 
 .day-grid.selected {
-    background-color: #409EFF;
+    background-color: #409eff;
 }
 
 .day-grid.preview {
-    background-color: #E6A23C;
-    border: 1px solid #E6A23C;
+    background-color: #e6a23c;
+    border: 1px solid #e6a23c;
 }
 
 .day-grid.today {
-    border: 1px solid #F56C6C;
+    border: 1px solid #f56c6c;
 }
 
 .day-title {
@@ -673,6 +710,6 @@ input[type="number"].ve-year:hover::-webkit-inner-spin-button {
 }
 
 .dropdown-content .dropdown-month:hover {
-    background-color: #409EFF;
+    background-color: #409eff;
 }
 </style>

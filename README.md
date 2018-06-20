@@ -19,6 +19,8 @@
 >3, available slots custom date number, lunar calendar, event area
 >
 >4, Available slots define the left and right key menus (the right-click menu has a default item)
+>
+>5, Multi-language support
 
 
 ## Quick Start
@@ -47,33 +49,34 @@ Export default {
 
 
 ## props parameter
-Parameter Name | Type | Default | Description
----- | --- | --- | ---
-Value | array | none | v-model binding value, is the current selected date list
-Activate-date | object | date of the year | contains two values ​​year current year, month current month
-Most-choice | number | 0 | up to choose the number of days, 0 infinity. Negative number indicates prohibition of selection
-Cross-month | boolean | false | whether to allow cross-month selection
-| pick-mode | boolean | true | Pick mode: When true, the number of newly selected days exceeds the number of most-choice settings, and the oldest date will be discarded. When false, more than most-choice settings will no longer be selected 
-| right-menu | boolean | true | Whether to display the right mouse menu |
-| day-event-menu | string | day-event-menu | Popup menu's class name |
-| day-event-menu-item | string | day-event-menu-item | popup menu item class name |
+| Parameter Name      | Type    | Default             | Description                                                                                                                                                                                                      |
+| ------------------- | ------- | ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Value               | array   | none                | v-model binding value, is the current selected date list                                                                                                                                                         |
+| Activate-date       | object  | date of the year    | contains two values ​​year current year, month current month                                                                                                                                                     |
+| Most-choice         | number  | 0                   | up to choose the number of days, 0 infinity. Negative number indicates prohibition of selection                                                                                                                  |
+| Cross-month         | boolean | false               | whether to allow cross-month selection                                                                                                                                                                           |
+| pick-mode           | boolean | true                | Pick mode: When true, the number of newly selected days exceeds the number of most-choice settings, and the oldest date will be discarded. When false, more than most-choice settings will no longer be selected |
+| right-menu          | boolean | true                | Whether to display the right mouse menu                                                                                                                                                                          |
+| day-event-menu      | string  | day-event-menu      | Popup menu's class name                                                                                                                                                                                          |
+| day-event-menu-item | string  | day-event-menu-item | popup menu item class name                                                                                                                                                                                       |
+| lang                | string  | zh-cn               | Multi-language support, default Simplified Chinese. Lu and Lunar Holidays are not displayed in en mode, and can only be customized using slots                                                                   |
 
 
 ## event
-Name | Parameter | Description
----- | --- | ---
-Refresh-calendar | None | Trigger/change activation year when switching calendars
-Change | selectedDate/array | Fired when the selected date changes, the parameter is the list of currently selected dates (string)
-| append-event | day | The default right-click menu is followed by an outgoing event. day is the day of the mouse click. If you use the right-menu slot, this event is invalidated and you need to write it yourself.|
+| Name             | Parameter          | Description                                                                                                                                                                                    |
+| ---------------- | ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Refresh-calendar | None               | Trigger/change activation year when switching calendars                                                                                                                                        |
+| Change           | selectedDate/array | Fired when the selected date changes, the parameter is the list of currently selected dates (string)                                                                                           |
+| append-event     | day                | The default right-click menu is followed by an outgoing event. day is the day of the mouse click. If you use the right-menu slot, this event is invalidated and you need to write it yourself. |
 
 ## slot
-| Name | Parameter | Description |
-| --- | --- | --- |
-day-number | day | is used to replace the default upper-left digit, day is the data object of the day |
-day-lunar | day | It is used to replace the lunar calendar, festivals, and solar terms in the upper right corner. day is the data object of the day |
-| day-event  | slot-scope="{day,popMenu}"  | Used to display the functions such as to-do items, day is the data object of the day, popMenu is the method of the pop-up left-click menu passed by the component, you must call as follows: @click="popMenu($event,{day,item} Only the item is the data that needs to be passed in. Only the other parameters are necessary. |
-| day-event-left-menu | slot-scope="{currentEvent,eventMenuShow}" | When there is a to-do item, click the left mouse button to pop up the menu slot; currentEvent is the {day,item} parameter passed in by the popMenu above.|
-| day-event-right-menu | slot-scope="{currentEvent,eventRightMenuShow}" | Menu slot that pops up when the right mouse button clicks on a blank event area |
+| Name                 | Parameter                                      | Description                                                                                                                                                                                                                                                                                                                   |
+| -------------------- | ---------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| day-number           | day                                            | is used to replace the default upper-left digit, day is the data object of the day                                                                                                                                                                                                                                            |
+| day-lunar            | day                                            | It is used to replace the lunar calendar, festivals, and solar terms in the upper right corner. day is the data object of the day                                                                                                                                                                                             |
+| day-event            | slot-scope="{day,popMenu}"                     | Used to display the functions such as to-do items, day is the data object of the day, popMenu is the method of the pop-up left-click menu passed by the component, you must call as follows: @click="popMenu($event,{day,item} Only the item is the data that needs to be passed in. Only the other parameters are necessary. |
+| day-event-left-menu  | slot-scope="{currentEvent,eventMenuShow}"      | When there is a to-do item, click the left mouse button to pop up the menu slot; currentEvent is the {day,item} parameter passed in by the popMenu above.                                                                                                                                                                     |
+| day-event-right-menu | slot-scope="{currentEvent,eventRightMenuShow}" | Menu slot that pops up when the right mouse button clicks on a blank event area                                                                                                                                                                                                                                               |
 
 
 ## day data content
