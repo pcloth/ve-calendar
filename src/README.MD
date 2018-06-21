@@ -21,6 +21,8 @@
 >4, Available slots define the left and right key menus (the right-click menu has a default item)
 >
 >5, Multi-language support
+>
+>6, two size display modes
 
 
 ## Quick Start
@@ -60,7 +62,7 @@ Export default {
 | day-event-menu      | string  | day-event-menu      | Popup menu's class name                                                                                                                                                                                          |
 | day-event-menu-item | string  | day-event-menu-item | popup menu item class name                                                                                                                                                                                       |
 | lang                | string  | zh-cn               | Multi-language support, default Simplified Chinese. Lu and Lunar Holidays are not displayed in en mode, and can only be customized using slots                                                                   |
-
+| mode                | string  | normal              | normal/mini/auto Three display modes, auto is automatically switched according to the width.                                                                                                                     |   
 
 ## event
 | Name             | Parameter          | Description                                                                                                                                                                                    |

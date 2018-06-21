@@ -1,16 +1,16 @@
 <template>
-    <div v-menu="false">
-        <div class="ve-calendar" v-if="mode==='normal'">
+    <div v-menu="false" v-resize="onResize">
+        <div class="ve-calendar" :class="{mini:currentMode==='mini'}" >
             <div class="header">
                 <div class="ve-button last" @click="lastMonth">
                     <i class="ve-icon icon-last"></i>
                 </div>
                 <div class="ve-button month">
                     <div style="width:100%;">
-                        <div class="dropdown" style="width:100%;text-align: center;">
+                        <div class="dropdown" :class="{mini:currentMode==='mini'}" style="">
                             <span>{{language(`${currentMonth+1}月`)}}</span>
-                            <div class="dropdown-content">
-                                <div class="dropdown-month" :class="{activated:m==(currentMonth+1)}" v-for="m in 12" :key="`dropdown_m${m}`" @click="gotoMonth(m)">{{language(`${m}月`)}}</div>
+                            <div class="dropdown-content" :class="{mini:currentMode==='mini'}">
+                                <div class="dropdown-month" :class="{mini:currentMode==='mini',activated:m==(currentMonth+1)}" v-for="m in 12" :key="`dropdown_m${m}`" @click="gotoMonth(m)">{{language(`${m}月`)}}</div>
                             </div>
                         </div>
                     </div>
@@ -19,7 +19,7 @@
                     <i class="ve-icon icon-next"></i>
                 </div>
                 <div class="ve-button year" >
-                    <input v-model="currentYear" @input="changeYear" :min="1900" type="number" class="ve-year">
+                    <input v-model="currentYear" @input="changeYear" :min="1900" type="number" class="ve-year" :class="{mini:currentMode==='mini'}">
                     <span v-show="showErr" style="font-size: 12px;position: absolute;margin-left: 20px;color: rgba(1,1,1,0.3);">{{language('不支持')}}</span>
                 </div>
 
@@ -34,26 +34,32 @@
                     <div class="days-line" v-for="line in 6" :key="`line_${line}`">
                         <div class="day-grid" @mousedown="dayMouseDown($event,row,line*7-7+index)" @mousemove="dayMouseMove($event,row,line*7-7+index)" @mouseup="dayMouseUp($event,row,line*7-7+index)" :class="{ 
                         disabled: row.sMonth!==(currentMonth+1)&&crossMonth===true ,
+                        mini:currentMode==='mini',
                         disabled2: row.sMonth!==(currentMonth+1)&&crossMonth===false,
                         selected: row.selected===true,
                         preview:row.preview === true,
                         today:row.sDay===today.getDate() && row.sMonth === (today.getMonth()+1) && row.sYear ===today.getFullYear(),
                         }" v-for="(row,index) in monthData.slice((line-1)*7,line*7)" :key="`grid_${index}`">
-                            <div class="day-title">
-                                <div class="day-number">
+                            <div class="day-title" :class="{mini:currentMode==='mini'}">
+                                <div class="day-number" :class="{mini:currentMode==='mini'}">
                                     <slot name="day-number" :day="row">
                                         <div :style="getHoliday(row)">{{row.sDay}}</div>
                                     </slot>
                                 </div>
-                                <div class="day-lunar" :style="`color:${row.color}`" :title="getLunar(row)">
+                                <div v-if="currentMode==='normal'" class="day-lunar" :class="{mini:currentMode==='mini'}" :style="`color:${row.color}`" :title="getLunar(row)">
                                     <slot name="day-lunar" :day="row">
-                                        <span v-if="lang==='zh-cn'">{{row.solarTerms||getLunar(row)}}</span>
+                                        <span v-if="lang==='zh-cn'">{{getLunar(row,3)}}</span>
                                         
                                     </slot>
                                 </div>
                             </div>
-                            <div class="day-content">
-                                <div class="day-event" @mouseenter="dayEventEnter" @mouseleave="dayEventLeave">
+                            <div class="day-content" :class="{mini:currentMode==='mini'}">
+                                <div v-if="currentMode==='mini'" class="day-lunar" :class="{mini:currentMode==='mini'}" :style="`color:${row.color}`" :title="getLunar(row)">
+                                    <slot name="day-lunar" :day="row">
+                                        <span v-if="lang==='zh-cn'">{{getLunar(row,3)}}</span>
+                                    </slot>
+                                </div>
+                                <div class="day-event" :class="{mini:currentMode==='mini'}"  @mouseenter="dayEventEnter" @mouseleave="dayEventLeave">
                                     <slot name="day-event" :day="row" :popMenu="clickEvent">
                                     </slot>
                                 </div>
@@ -78,30 +84,30 @@
                 </div>
             </div>
         </div>
-        <div class="" v-if="mode==='mini'">
 
-        </div>
     </div>
 </template>
 
 <script>
 import lunar from "./js/lunar";
 import english from "./js/language";
+import resize from 'vue-resize-directive'
 
-import Vue from "vue";
-
-Vue.directive("menu", {
-    // 屏蔽右键菜单
-    inserted: function(target) {
-        target.oncontextmenu = function() {
-            //do something......
-            //Data.configData.dragData[_index].menu = true;
-            return false;
-        };
-    }
-});
 
 export default {
+    directives:{
+        'menu':{
+            // 屏蔽右键菜单
+            inserted: function(target) {
+                target.oncontextmenu = function() {
+                    //do something......
+                    //Data.configData.dragData[_index].menu = true;
+                    return false;
+                };
+            }
+        },
+        'resize':resize
+    },
     name: "ve-calendar",
     props: {
         defHolidayColor: {
@@ -189,6 +195,7 @@ export default {
             currentMonth: this.activateDate.month - 1,
             lastCurMonth: this.activateDate.month - 1, // 上一个当前月，用于选择月份的时候取消
             selectedDate: this.value,
+            currentMode:this.mode, // 当前显示模式
             lastSelectedDate: this.value, // 上次选中的日期
             monthEditMode: false,
             yearEditMode: false,
@@ -219,6 +226,11 @@ export default {
             this.currentYear = this.activateDate.year;
             this.currentMonth = this.activateDate.month - 1;
             this.makeCalendar();
+        },
+        mode(){
+            if(this.mode!=='auto') {
+                this.currentMode = this.mode;
+            }
         }
     },
     created() {},
@@ -281,15 +293,16 @@ export default {
             }
             this.makeCalendar();
         },
-        getLunar(day) {
+        getLunar(day,length=10) {
             // 显示节气、节日、农历
             if (day.color) day.color = this.defHolidayColor;
-            return (
+            let lunar = (
                 day.solarTerms ||
                 day.solarFestival ||
                 day.lunarFestival ||
                 (day.lDay == 1 ? day.lMonthChinese : day.lDayChinese)
-            );
+            )
+            return lunar.substr(0,length)
         },
 
         makeCalendar() {
@@ -478,6 +491,13 @@ export default {
             this.eventMenuShow = true;
 
             this.$emit("click-event", e, data);
+        },
+        onResize(ele){
+            if(ele.offsetWidth<=400){
+                this.currentMode = 'mini'
+            }else if(ele.offsetWidth>=600){
+                this.currentMode ='normal'
+            }
         }
     },
     beforeDestroy() {
@@ -492,224 +512,6 @@ export default {
 
 <style scoped>
 @import "./style/icon.css";
-.ve-calendar {
-    display: flex;
-    border: 1px solid #dcdfe6;
-    flex-direction: column;
-    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-    border-radius: 4px;
-    transition: 0.3s;
-    padding: 20px;
-    font-size: 14px;
-    /* min-width: 740px; */
-    max-width: 960px;
-    -moz-user-select: none; /*火狐*/
-    -webkit-user-select: none; /*webkit浏览器*/
-    -ms-user-select: none; /*IE10*/
-    -khtml-user-select: none; /*早期浏览器*/
-    user-select: none;
-}
-
-.ve-calendar .header {
-    display: flex;
-    /* justify-content: space-around; */
-    align-items: center;
-    width: 100%;
-}
-
-.header .month,
-.year {
-    font-size: 22px;
-    font-weight: 600;
-}
-
-.header .month {
-    width: 15%;
-}
-
-input.ve-year {
-    height: 36px;
-    font-size: 22px;
-    width: 100px;
-    font-weight: 600;
-    border: none;
-}
-
-input.ve-year:focus {
-    outline: none;
-}
-
-input[type="number"].ve-year::-webkit-inner-spin-button {
-    width: 20px;
-    height: 36px;
-}
-
-input[type="number"].ve-year:hover::-webkit-inner-spin-button {
-    width: 20px;
-    height: 36px;
-    border: none;
-}
-
-.ve-button {
-    min-width: 40px;
-    min-height: 24px;
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-left: 10px;
-    margin-right: 10px;
-}
-.ve-button:hover {
-    background-color: #409eff;
-    border-radius: 3px;
-}
-
-.ve-calendar .body {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    margin-top: 20px;
-}
-
-.days-line,
-.week-title {
-    display: flex;
-    width: 100%;
-    flex-direction: row;
-    justify-content: center;
-}
-
-.title-grid {
-    width: calc((100% / 7));
-    height: 30px;
-    justify-content: center;
-    display: flex;
-}
-.day-grid {
-    width: calc((100% / 7));
-    height: 80px;
-    border: 1px solid #dcdfe6;
-    padding: 5px;
-    border-radius: 3px;
-    overflow: hidden;
-}
-
-.day-grid.disabled {
-    color: #c0c4cc;
-}
-
-.day-grid.disabled2 {
-    color: #c0c4cc;
-    pointer-events: none;
-}
-
-.day-event-menu {
-    background-color: #f2f6fc;
-    position: fixed;
-    z-index: 9;
-    border-radius: 3px;
-    width: 80px;
-    display: flex;
-    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.3);
-    flex-direction: column;
-    padding: 10px;
-    width: 200px;
-}
-
-.day-event-menu-item {
-    width: 100%;
-    height: 32px;
-    display: flex;
-    align-items: center;
-}
-.day-event-menu-item:hover {
-    background-color: #409eff;
-    cursor: pointer;
-}
-
-.day-grid:hover {
-    border: 1px solid #2d71b4;
-    /* background-color: #409EFF; */
-}
-
-.day-grid.selected {
-    background-color: #409eff;
-}
-
-.day-grid.preview {
-    background-color: #e6a23c;
-    border: 1px solid #e6a23c;
-}
-
-.day-grid.today {
-    border: 1px solid #f56c6c;
-}
-
-.day-title {
-    display: flex;
-    justify-content: space-around;
-}
-.day-number {
-    width: 30px;
-    display: flex;
-    font-weight: 600;
-    font-size: 18px;
-}
-
-.day-lunar {
-    display: flex;
-    /* width: calc((70% - 10px)); */
-    /* max-width: calc((70% - 10px)); */
-    width: 60px;
-    flex: 0 0 60px;
-    overflow: hidden;
-    word-break: keep-all;
-    white-space: nowrap;
-    /* text-overflow: ellipsis; */
-}
-
-/* .day-event {
-    margin-top: 10px;
-    cursor: pointer;
-} */
-
-.day-content {
-    display: flex;
-    flex: 1 1 100%;
-}
-
-.dropdown {
-    position: relative;
-    display: inline-block;
-}
-.dropdown-content {
-    display: none;
-    position: absolute;
-    background-color: #f9f9f9;
-    min-width: 100px;
-    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-    font-size: 14px;
-    border-radius: 3px;
-    /* margin-left: -1rem; */
-}
-.dropdown:hover .dropdown-content {
-    display: flex;
-    flex-direction: column;
-}
-.dropdown-content .dropdown-month {
-    /* width: 100%; */
-    height: 30px;
-    display: flex;
-    padding-left: 30px;
-    align-items: center;
-}
-
-.dropdown-month.activated {
-    color: #2d71b4;
-}
-
-.dropdown-content .dropdown-month:hover {
-    background-color: #409eff;
-}
+@import "./style/normal.css";
+@import "./style/mini.css";
 </style>
