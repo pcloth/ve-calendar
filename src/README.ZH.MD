@@ -63,7 +63,9 @@ export default {
 | day-event-menu-item | string  | day-event-menu-item | 弹出菜单项目的class name                                                                                                              |
 | lang                | string  | zh-cn               | 多语言支持，默认简体中文。en模式下农历和假日不显示，只能使用slot自定义                                                                |
 | mode                | string  | normal              | normal/mini/auto 三个显示模式，auto是根据宽度自动切换。                                                                               |      
-
+| lunar               | boolean | true                | 是否显示农历区域，如果禁止，相应的插槽也无法使用。                                                                                    |
+| event               | boolean | true                | 是否显示事件区域，如果禁止，相应的插槽也无法使用。                                                                                    |
+| height              | string  | auto                | 组件渲染的高度。                                                                                    |
 
 
 ## 事件

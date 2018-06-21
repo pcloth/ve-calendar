@@ -1,7 +1,7 @@
 <template>
     <div v-menu="false" v-resize="onResize">
-        <div class="ve-calendar" :class="{mini:currentMode==='mini'}" >
-            <div class="header">
+        <div class="ve-calendar" :class="{mini:currentMode==='mini'}" :style="`height:${height}`" >
+            <div ref="header" class="header">
                 <div class="ve-button last" @click="lastMonth">
                     <i class="ve-icon icon-last"></i>
                 </div>
@@ -26,27 +26,30 @@
                 <div class="ve-button today" @click="goToday">{{language('今天')}}</div>
 
             </div>
-            <div class="body">
-                <div class="week-title">
+            <div ref="body" class="body">
+                <div ref="title" class="week-title">
                     <div class="title-grid" v-for="week in weekTitleData" :key="week">{{language(week)}}</div>
                 </div>
-                <div class="days">
+                <div ref="days" class="days">
                     <div class="days-line" v-for="line in 6" :key="`line_${line}`">
-                        <div class="day-grid" @mousedown="dayMouseDown($event,row,line*7-7+index)" @mousemove="dayMouseMove($event,row,line*7-7+index)" @mouseup="dayMouseUp($event,row,line*7-7+index)" :class="{ 
+                        <div  class="day-grid" @mousedown="dayMouseDown($event,row,line*7-7+index)" @mousemove="dayMouseMove($event,row,line*7-7+index)" @mouseup="dayMouseUp($event,row,line*7-7+index)" :class="{ 
                         disabled: row.sMonth!==(currentMonth+1)&&crossMonth===true ,
                         mini:currentMode==='mini',
                         disabled2: row.sMonth!==(currentMonth+1)&&crossMonth===false,
                         selected: row.selected===true,
                         preview:row.preview === true,
                         today:row.sDay===today.getDate() && row.sMonth === (today.getMonth()+1) && row.sYear ===today.getFullYear(),
-                        }" v-for="(row,index) in monthData.slice((line-1)*7,line*7)" :key="`grid_${index}`">
+                        }" v-for="(row,index) in monthData.slice((line-1)*7,line*7)" :key="`grid_${index}`"
+                        
+                        >
+                        <!-- :style="`height:${gridHeight}`" -->
                             <div class="day-title" :class="{mini:currentMode==='mini'}">
                                 <div class="day-number" :class="{mini:currentMode==='mini'}">
                                     <slot name="day-number" :day="row">
                                         <div :style="getHoliday(row)">{{row.sDay}}</div>
                                     </slot>
                                 </div>
-                                <div v-if="currentMode==='normal'" class="day-lunar" :class="{mini:currentMode==='mini'}" :style="`color:${row.color}`" :title="getLunar(row)">
+                                <div v-if="currentMode==='normal' && lunar" class="day-lunar"  :style="`color:${row.color}`" :title="getLunar(row)">
                                     <slot name="day-lunar" :day="row">
                                         <span v-if="lang==='zh-cn'">{{getLunar(row,3)}}</span>
                                         
@@ -54,12 +57,12 @@
                                 </div>
                             </div>
                             <div class="day-content" :class="{mini:currentMode==='mini'}">
-                                <div v-if="currentMode==='mini'" class="day-lunar" :class="{mini:currentMode==='mini'}" :style="`color:${row.color}`" :title="getLunar(row)">
+                                <div v-if="currentMode==='mini' && lunar" class="day-lunar" :class="{mini:currentMode==='mini'}" :style="`color:${row.color}`" :title="getLunar(row)">
                                     <slot name="day-lunar" :day="row">
                                         <span v-if="lang==='zh-cn'">{{getLunar(row,3)}}</span>
                                     </slot>
                                 </div>
-                                <div class="day-event" :class="{mini:currentMode==='mini'}"  @mouseenter="dayEventEnter" @mouseleave="dayEventLeave">
+                                <div v-if="event" class="day-event" :class="{mini:currentMode==='mini'}"  @mouseenter="dayEventEnter" @mouseleave="dayEventLeave">
                                     <slot name="day-event" :day="row" :popMenu="clickEvent">
                                     </slot>
                                 </div>
@@ -91,12 +94,11 @@
 <script>
 import lunar from "./js/lunar";
 import english from "./js/language";
-import resize from 'vue-resize-directive'
-
+import resize from "vue-resize-directive";
 
 export default {
-    directives:{
-        'menu':{
+    directives: {
+        menu: {
             // 屏蔽右键菜单
             inserted: function(target) {
                 target.oncontextmenu = function() {
@@ -106,7 +108,7 @@ export default {
                 };
             }
         },
-        'resize':resize
+        resize: resize
     },
     name: "ve-calendar",
     props: {
@@ -184,6 +186,20 @@ export default {
         lang: {
             type: String,
             default: "zh-cn"
+        },
+        lunar: {
+            // 是否显示农历和节日区域
+            type: Boolean,
+            default: true
+        },
+        event: {
+            // 是否显示待办事项区域
+            type: Boolean,
+            default: true
+        },
+        height: {
+            type: String,
+            default: "auto"
         }
     },
     data() {
@@ -195,7 +211,7 @@ export default {
             currentMonth: this.activateDate.month - 1,
             lastCurMonth: this.activateDate.month - 1, // 上一个当前月，用于选择月份的时候取消
             selectedDate: this.value,
-            currentMode:this.mode, // 当前显示模式
+            currentMode: this.mode, // 当前显示模式
             lastSelectedDate: this.value, // 上次选中的日期
             monthEditMode: false,
             yearEditMode: false,
@@ -209,7 +225,8 @@ export default {
             eventMenuShow: false, // 左键菜单
             eventRightMenuShow: false, // 右键菜单
             eventMenuTop: 0,
-            eventMenuLeft: 0
+            eventMenuLeft: 0,
+            gridHeight: "auto"
         };
     },
     computed: {},
@@ -227,8 +244,8 @@ export default {
             this.currentMonth = this.activateDate.month - 1;
             this.makeCalendar();
         },
-        mode(){
-            if(this.mode!=='auto') {
+        mode() {
+            if (this.mode !== "auto") {
                 this.currentMode = this.mode;
             }
         }
@@ -293,16 +310,15 @@ export default {
             }
             this.makeCalendar();
         },
-        getLunar(day,length=10) {
+        getLunar(day, length = 10) {
             // 显示节气、节日、农历
             if (day.color) day.color = this.defHolidayColor;
-            let lunar = (
+            let lunar =
                 day.solarTerms ||
                 day.solarFestival ||
                 day.lunarFestival ||
-                (day.lDay == 1 ? day.lMonthChinese : day.lDayChinese)
-            )
-            return lunar.substr(0,length)
+                (day.lDay == 1 ? day.lMonthChinese : day.lDayChinese);
+            return lunar.substr(0, length);
         },
 
         makeCalendar() {
@@ -392,7 +408,6 @@ export default {
             }
             // 鼠标右键
             if (e.button === 2 && this.rightMenu === true) {
-                console.log(e);
                 this.currentEvent = { day: row };
                 this.eventMenuTop = e.y;
                 this.eventMenuLeft = e.x;
@@ -492,11 +507,27 @@ export default {
 
             this.$emit("click-event", e, data);
         },
-        onResize(ele){
-            if(ele.offsetWidth<=400){
-                this.currentMode = 'mini'
-            }else if(ele.offsetWidth>=600){
-                this.currentMode ='normal'
+        onResize(ele) {
+            // console.log("test", ele.offsetHeight);
+            // window.tt = this;
+            // window.hh = ele;
+            // let dh =
+            //     ele.offsetHeight -
+            //     (this.$refs.header.offsetHeight +
+            //         this.$refs.title.offsetHeight +
+            //         20);
+
+            // console.log("dh:", this.$refs.days.offsetWidth);
+            // let dh = this.$refs.days.offsetWidth / 7;
+            // this.gridHeight = `${dh}px;`;
+
+            if (this.mode !== "auto") {
+                return;
+            }
+            if (ele.offsetWidth <= 400) {
+                this.currentMode = "mini";
+            } else if (ele.offsetWidth >= 600) {
+                this.currentMode = "normal";
             }
         }
     },

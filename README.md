@@ -63,6 +63,9 @@ Export default {
 | day-event-menu-item | string  | day-event-menu-item | popup menu item class name                                                                                                                                                                                       |
 | lang                | string  | zh-cn               | Multi-language support, default Simplified Chinese. Lu and Lunar Holidays are not displayed in en mode, and can only be customized using slots                                                                   |
 | mode                | string  | normal              | normal/mini/auto Three display modes, auto is automatically switched according to the width.                                                                                                                     |   
+| lunar               | boolean | true                | Whether to display the lunar region or not, the corresponding slot cannot be used.                                                                                    |
+| event               | boolean | true                | Whether to display the event area, if prohibited, the corresponding slot can not be used.                                                                                    |
+| height              | string  | auto                | The height of the component's rendering.                                                                                    |
 
 ## event
 | Name             | Parameter          | Description                                                                                                                                                                                    |
