@@ -1,12 +1,12 @@
 {
   "name": "ve-calendar",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "this easy calendar by vue",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "dependencies":{
+  "dependencies": {
     "vue-resize-directive": "^1.0.0"
   },
   "repository": {
