@@ -10,12 +10,6 @@ input.ve-year.mini {
   border: none;
 }
 
-/*input[type="number"].ve-year.mini:focus {*/
-
-/*outline: none;*/
-
-/*}*/
-
 input[type="number"].ve-year.mini::-webkit-inner-spin-button {
   width: 20px;
   height: 22px;
@@ -51,13 +45,13 @@ input[type="number"].ve-year.mini:hover::-webkit-inner-spin-button {
 }
 
 .day-grid.mini {
-  /*display: block;*/
   border: none;
   flex-direction: column;
-  /* height: 50px; */
   justify-content: center;
   align-items: flex-end;
   padding: 3px;
+  border-radius: 5px;
+  border: 1px solid transparent;
 }
 
 .day-title.mini {
@@ -69,17 +63,12 @@ input[type="number"].ve-year.mini:hover::-webkit-inner-spin-button {
   justify-content: center;
 }
 
-.day-grid.mini.selected {
-  border-radius: 5px;
-}
-
 .day-grid.mini.today {
   border: 1px solid #f56c6c;
 }
 
 .day-grid.mini:hover {
   border: 1px solid #2d71b4;
-  box-sizing: border-box;
 }
 
 .day-content.mini {
