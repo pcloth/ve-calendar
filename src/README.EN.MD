@@ -7,14 +7,14 @@
    <a href="https://www.npmjs.com/package/ve-calendar"><img src="https://img.shields.io/npm/dm/ve-calendar.svg?style=flat " alt="npm"></a>
  </p>
 
-
+## [中文文档](./README.MD)
 
 ## Preview
 ![Alt ​​text](https://raw.githubusercontent.com/pcloth/ve-calendar/master/images/demo.gif)
 
  
 
-[中文文档](./README.MD)
+
 
 
 # Current function:

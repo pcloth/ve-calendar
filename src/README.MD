@@ -7,13 +7,13 @@
    <a href="https://www.npmjs.com/package/ve-calendar"><img src="https://img.shields.io/npm/dm/ve-calendar.svg?style=flat" alt="npm"></a>
  </p>
  
-
+## [English document by machine translation](./README.EN.MD)
  
 ## 预览
 ![Alt text](https://raw.githubusercontent.com/pcloth/ve-calendar/master/images/demo.gif)
 
 
-[English document by machine translation](./README.EN.MD)
+
 
 # 目前功能:
 >1、显示2050年以前的农历、节气、节日
