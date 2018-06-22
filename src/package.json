@@ -1,6 +1,6 @@
 {
   "name": "ve-calendar",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "this easy calendar by vue",
   "main": "index.js",
   "scripts": {

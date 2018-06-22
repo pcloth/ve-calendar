@@ -1,122 +1,128 @@
 # ve-calendar
 
-> This is a vue 2.0 based calendar component
->
+> 这是一个基于vue 2.X的日历组件
+> 
 <p align="center">
-   <a href="https://www.npmjs.com/package/ve-calendar"><img src="https://img.shields.io/npm/v/ve-calendar.svg?style=flat " alt="npm"></a>
-   <a href="https://www.npmjs.com/package/ve-calendar"><img src="https://img.shields.io/npm/dm/ve-calendar.svg?style=flat " alt="npm"></a>
- </p>
- 
+   <a href="https://www.npmjs.com/package/ve-calendar"><img src="https://img.shields.io/npm/v/ve-calendar.svg?style=flat" alt="npm"></a>
+   <a href="https://www.npmjs.com/package/ve-calendar"><img src="https://img.shields.io/npm/dm/ve-calendar.svg?style=flat" alt="npm"></a>
+ </p>
+ 
 
-[中文文档](./README.ZH.MD)
+ 
+## 预览
+![Alt text](https://raw.githubusercontent.com/pcloth/ve-calendar/master/images/demo.gif)
 
 
-# Current function:
->1, display the lunar calendar, solar terms, festivals before 2050
+[English document by machine translation](./README.EN.MD)
+
+# 目前功能:
+>1、显示2050年以前的农历、节气、节日
 >
->2, can specify the maximum number of selected dates
+>2、可指定最大选中日期数量
 >
->3, available slots custom date number, lunar calendar, event area
+>3、可用插槽自定义日期数字、农历、事件区域
 >
->4, Available slots define the left and right key menus (the right-click menu has a default item)
+>4、可用插槽定义左右键菜单（右键菜单有默认项目）
 >
->5, Multi-language support
+>5、多语言支持，默认中文
 >
->6, two size display modes
+>6、两种尺寸显示模式
 
+## 快速开始
 
-## Quick Start
-
-### The first step:
+### 第一步:
 ``` sh
-Npm install ve-calendar --save
+npm install ve-calendar --save
 ```
-### The second step, on your vue page
-```js
-Import veCalendar from "ve-calendar";
+### 第二步，在你的vue页面里
+``` js
+import veCalendar from "ve-calendar";
 
 // in your vue <script>
-Export default {
-    Components: {
-        veCalendar
-    }
+export default {
+    components: {
+        veCalendar
+    }
 }
 ```
 
-### The third step, loading the template:
+### 第三步，加载模板:
 ``` html
 <veCalendar v-model="selectDateList"></veCalendar>
 
 ```
 
 
-## props parameter
-| Parameter Name      | Type    | Default             | Description                                                                                                                                                                                                      |
-| ------------------- | ------- | ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Value               | array   | none                | v-model binding value, is the current selected date list                                                                                                                                                         |
-| Activate-date       | object  | date of the year    | contains two values ​​year current year, month current month                                                                                                                                                     |
-| Most-choice         | number  | 0                   | up to choose the number of days, 0 infinity. Negative number indicates prohibition of selection                                                                                                                  |
-| Cross-month         | boolean | false               | whether to allow cross-month selection                                                                                                                                                                           |
-| pick-mode           | boolean | true                | Pick mode: When true, the number of newly selected days exceeds the number of most-choice settings, and the oldest date will be discarded. When false, more than most-choice settings will no longer be selected |
-| right-menu          | boolean | true                | Whether to display the right mouse menu                                                                                                                                                                          |
-| day-event-menu      | string  | day-event-menu      | Popup menu's class name                                                                                                                                                                                          |
-| day-event-menu-item | string  | day-event-menu-item | popup menu item class name                                                                                                                                                                                       |
-| lang                | string  | zh-cn               | Multi-language support, default Simplified Chinese. Lu and Lunar Holidays are not displayed in en mode, and can only be customized using slots                                                                   |
-| mode                | string  | normal              | normal/mini/auto Three display modes, auto is automatically switched according to the width.                                                                                                                     |   
-| lunar               | boolean | true                | Whether to display the lunar region or not, the corresponding slot cannot be used.                                                                                    |
-| event               | boolean | true                | Whether to display the event area, if prohibited, the corresponding slot can not be used.                                                                                    |
-| height              | string  | auto                | The height of the component's rendering.                                                                                    |
+## props参数
 
-## event
-| Name             | Parameter          | Description                                                                                                                                                                                    |
-| ---------------- | ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Refresh-calendar | None               | Trigger/change activation year when switching calendars                                                                                                                                        |
-| Change           | selectedDate/array | Fired when the selected date changes, the parameter is the list of currently selected dates (string)                                                                                           |
-| append-event     | day                | The default right-click menu is followed by an outgoing event. day is the day of the mouse click. If you use the right-menu slot, this event is invalidated and you need to write it yourself. |
-
-## slot
-| Name                 | Parameter                                      | Description                                                                                                                                                                                                                                                                                                                   |
-| -------------------- | ---------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| day-number           | day                                            | is used to replace the default upper-left digit, day is the data object of the day                                                                                                                                                                                                                                            |
-| day-lunar            | day                                            | It is used to replace the lunar calendar, festivals, and solar terms in the upper right corner. day is the data object of the day                                                                                                                                                                                             |
-| day-event            | slot-scope="{day,popMenu}"                     | Used to display the functions such as to-do items, day is the data object of the day, popMenu is the method of the pop-up left-click menu passed by the component, you must call as follows: @click="popMenu($event,{day,item} Only the item is the data that needs to be passed in. Only the other parameters are necessary. |
-| day-event-left-menu  | slot-scope="{currentEvent,eventMenuShow}"      | When there is a to-do item, click the left mouse button to pop up the menu slot; currentEvent is the {day,item} parameter passed in by the popMenu above.                                                                                                                                                                     |
-| day-event-right-menu | slot-scope="{currentEvent,eventRightMenuShow}" | Menu slot that pops up when the right mouse button clicks on a blank event area                                                                                                                                                                                                                                               |
+| 参数名称            | 类型    | 默认值              | 说明                                                                                                                                  |
+| ------------------- | ------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| value               | array   | 无                  | v-model绑定值，是当前选中日期列表                                                                                                     |
+| activate-date       | object  | 今天的年月          | 包含两个值year当前年份，month当前月份                                                                                                 |
+| off-days            | array   | 无                  | 包含了休息日数据，如果没有这个参数，默认休息日是周六周日和节假日                                                                      |
+| most-choice         | number  | 0                   | 最多选择日期数量,0无限,负数表示禁止选择                                                                                               |
+| cross-month         | boolean | false               | 是否允许跨月选择日期                                                                                                                  |
+| pick-mode           | boolean | true                | 挑选模式：为true时新选中的日期数量如果超过most-choice设定的数量，将把最早的一个日期丢弃。为false时，超过most-choice设定值将不能再选中 |
+| right-menu          | boolean | true                | 是否显示鼠标右键菜单                                                                                                                  |
+| day-event-menu      | string  | day-event-menu      | 弹出菜单的class name                                                                                                                  |
+| day-event-menu-item | string  | day-event-menu-item | 弹出菜单项目的class name                                                                                                              |
+| lang                | string  | zh-cn               | 多语言支持，默认简体中文。en模式下农历和假日不显示，只能使用slot自定义                                                                |
+| mode                | string  | normal              | normal/mini/auto 三个显示模式，auto是根据宽度自动切换。                                                                               |  |
+| lunar               | boolean | true                | 是否显示农历区域，如果禁止，相应的插槽也无法使用。                                                                                    |
+| event               | boolean | true                | 是否显示事件区域，如果禁止，相应的插槽也无法使用。                                                                                    |
+| height              | string  | auto                | 组件渲染的高度。                                                                                                                      |
 
 
-## day data content
-```js
+## 事件
+| 名字             | 参数                   | 说明                                                                                                            |
+| ---------------- | ---------------------- | --------------------------------------------------------------------------------------------------------------- |
+| refresh-calendar | {year,month},monthData | 当切换日历时触发/改变激活年月,当前视图中的全部日历数据。                                                        |
+| change           | selectedDate/array     | 选中日期发生改变时触发，参数是当前选中的日期列表（字符串）                                                      |
+| append-event     | day                    | 默认的右键菜单点击后传出的事件，day是鼠标点击的当天对象。如果使用了right-menu插槽，这个事件失效，需要你自己写。 |
+
+
+## 插槽
+| 名字                 | 参数                                           | 说明                                                                                                                                                                                                  |
+| -------------------- | ---------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| day-number           | slot-scope="{day}"                             | 用来替换默认的左上角数字，day就是当天的数据对象                                                                                                                                                       |
+| day-lunar            | slot-scope="{day}"                             | 用来替换右上角的农历、节日、节气，day就是当天的数据对象                                                                                                                                               |
+| day-event            | slot-scope="{day,popMenu}"                     | 用来显示待办事项之类的功能，day就是当天的数据对象，popMenu是组件传出来的弹出左键菜单的方法，你调用必须如下：@click="popMenu($event,{day,item}) 参数中只有item是需要传递进去的数据。其他都是必要格式。 |
+| day-event-left-menu  | slot-scope="{currentEvent,eventMenuShow}"      | 当有待办事项时，点击左键弹出的菜单插槽;currentEvent就是上面一条popMenu传递进来的{day,item}参数                                                                                                        |
+| day-event-right-menu | slot-scope="{currentEvent,eventRightMenuShow}" | 当鼠标右键点击空白事件区域时弹出的菜单插槽                                                                                                                                                            |
+
+
+## day 数据内容
+``` js
 isToday = false;
-//solar calendar
-sYear = sYear; //4 digits in AD
-sMonth = sMonth; //number of the month
-sDay = sDay; //AD figures
-Week = week; //weeks, 1 Chinese
-    
-// Lunar
-lYear = lYear; //4 digits in AD
-lMonth = lMonth; // Lunar month number
-lMonthChinese = ''
-lDay = lDay; // Chinese lunar calendar number
-isLeap = isLeap; // Is it a lunar month?
-lDayChinese = 'First Day'
+//阳历
+sYear = sYear;   //公元年4位数字
+sMonth = sMonth;  //公元月数字
+sDay = sDay;    //公元日数字
+week = week;    //星期, 1个中文
+    
+//农历
+lYear = lYear;   //公元年4位数字
+lMonth = lMonth;  //农历月数字
+lMonthChinese = monthChinese[lMonth-1]
+lDay = lDay;    //农历日数字
+isLeap = isLeap;  //是否为农历闰月?
+lDayChinese = '初一'
 
-//character
-cYear = cYear; //yearly column, 2 Chinese
-cMonth = cMonth; //Moon, 2 Chinese
-cDay = cDay; //Japanese, 2 Chinese
+//八字
+cYear = cYear;   //年柱, 2个中文
+cMonth = cMonth;  //月柱, 2个中文
+cDay = cDay;    //日柱, 2个中文
 
-Color = ''; // The color of the holiday display
+color = ''; // 节日显示的颜色
 
-lunarFestival = ''; // Lunar Holidays
-solarFestival = ''; // Gregorian calendar
-solarTerms = ''; // Solar Terms
+lunarFestival = ''; //农历节日
+solarFestival = ''; //公历节日
+solarTerms = ''; //节气
 
-If (`${sMonth}`.length == 1) sMonth = `0${sMonth}`;
-If (`${sDay}`.length == 1) sDay = `0${sDay}`;
-sDate = `${sYear}-${sMonth}-${sDay}` // string date
+if (`${sMonth}`.length == 1) sMonth = `0${sMonth}`;
+if (`${sDay}`.length == 1) sDay = `0${sDay}`;
+sDate = `${sYear}-${sMonth}-${sDay}` // 字符串年月日
 ```
-
 ## demo
 ``` html
 <template>
@@ -248,10 +254,10 @@ export default {
         margin-top: 10px;
     }
 </style>
+
+
 ```
 
-## Preview
-![Alt ​​text](./images/demo.gif)
 
 
 ## License
