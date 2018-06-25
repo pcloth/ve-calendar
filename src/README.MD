@@ -71,6 +71,8 @@ export default {
 | lunar               | boolean | true                | 是否显示农历区域，如果禁止，相应的插槽也无法使用。                                                                                    |
 | event               | boolean | true                | 是否显示事件区域，如果禁止，相应的插槽也无法使用。                                                                                    |
 | height              | string  | auto                | 组件渲染的高度。                                                                                                                      |
+| enabled-list        | array   | []                  | 只允许列表中的日期被选中                                                                                                              |
+| disabled-list       | array   | []                  | 列表中的日期不能被选中，和enabled-list最好不要同时用                                                                                  |
 
 
 ## 事件

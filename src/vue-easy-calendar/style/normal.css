@@ -120,11 +120,11 @@ input[type="number"].ve-year:hover::-webkit-inner-spin-button {
   box-sizing: border-box;
 }
 
-.day-grid.disabled {
+.day-grid.gray {
   color: #c0c4cc;
 }
 
-.day-grid.disabled2 {
+.day-grid.disabled {
   color: #c0c4cc;
   pointer-events: none;
 }

@@ -33,9 +33,9 @@
                 <div ref="days" class="days">
                     <div class="days-line" v-for="line in 6" :key="`line_${line}`">
                         <div  class="day-grid" @mousedown="dayMouseDown($event,row,line*7-7+index)" @mousemove="dayMouseMove($event,row,line*7-7+index)" @mouseup="dayMouseUp($event,row,line*7-7+index)" :class="{ 
-                        disabled: row.sMonth!==(currentMonth+1)&&crossMonth===true ,
+                        gray: row.sMonth!==(currentMonth+1)&&crossMonth===true ,
                         mini:currentMode==='mini',
-                        disabled2: row.sMonth!==(currentMonth+1)&&crossMonth===false,
+                        disabled: (row.sMonth!==(currentMonth+1)&&crossMonth===false) || (enabledList.length>0 && enabledList.indexOf(row.sDate)<0) || (disabledList.length>0 && disabledList.indexOf(row.sDate)>=0),
                         selected: row.selected===true,
                         preview:row.preview === true,
                         today:row.sDay===today.getDate() && row.sMonth === (today.getMonth()+1) && row.sYear ===today.getFullYear(),
@@ -124,6 +124,20 @@ export default {
         },
         offDays: {
             // 工作休息日
+            type: Array,
+            default() {
+                return [];
+            }
+        },
+        enabledList: {
+            // 只准选择名单中的日期
+            type: Array,
+            default() {
+                return [];
+            }
+        },
+        disabledList: {
+            // 禁止选中的日期
             type: Array,
             default() {
                 return [];

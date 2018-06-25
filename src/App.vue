@@ -67,18 +67,18 @@ export default {
             modeList: ["mini", "normal", "auto"],
             modeIndex: 0,
             mode: "",
-            item:"去看世界杯",
-            lunar:true,
-            offDays:[],
-            pickMode:false,
-            mostChoice:0,
-            crossMonth:true,
-            event:true,
+            item: "去看世界杯",
+            lunar: true,
+            offDays: [],
+            pickMode: false,
+            mostChoice: 0,
+            crossMonth: true,
+            event: true,
             activateDate: {
                 year: 2017,
                 month: 6
             },
-            height:'500px',
+            height: "500px",
             month: 6,
             test: [2],
             selected: []
@@ -89,11 +89,9 @@ export default {
             this.modeIndex++;
             this.mode = this.modeList[this.modeIndex % 3];
         },
-        setOffDays(){
-
-
-            this.offDays = JSON.parse(JSON.stringify(this.selected))
-            this.selected = []
+        setOffDays() {
+            this.offDays = JSON.parse(JSON.stringify(this.selected));
+            this.selected = [];
         },
         refreshC(yearmonth, data) {
             console.log(yearmonth, data);
@@ -118,13 +116,13 @@ export default {
 </script>
 
 <style>
-    .demo-div {
-        padding: 20px;
-        height: 200px;
-    }
+.demo-div {
+    padding: 20px;
+    height: 200px;
+}
 
-    .demo-div div {
-        margin-top: 10px;
-    }
+.demo-div div {
+    margin-top: 10px;
+}
 </style>
 
