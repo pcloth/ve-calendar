@@ -13,6 +13,7 @@
 ![Alt text](https://raw.githubusercontent.com/pcloth/ve-calendar/master/images/demo.gif)
 
 
+## <a href="https://jsfiddle.net/pcloth/Lma8qonh/">查看在线demo</a>
 
 
 # 目前功能:

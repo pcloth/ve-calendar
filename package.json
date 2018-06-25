@@ -28,7 +28,7 @@
   "bugs": {
     "url": "https://github.com/pcloth/ve-calendar/issues"
   },
-  "homepage": "https://github.com/ve-calendar",
+  "homepage": "https://github.com/pcloth",
   "dependencies": {
     "vue-resize-directive": "^1.0.0"
   },

@@ -13,8 +13,7 @@
 ![Alt ​​text](https://raw.githubusercontent.com/pcloth/ve-calendar/master/images/demo.gif)
 
  
-
-
+## <a href="https://jsfiddle.net/pcloth/Lma8qonh/">View online demo</a>
 
 
 # Current function:
