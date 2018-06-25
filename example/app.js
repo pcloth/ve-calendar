@@ -1,15 +1,15 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
-import App from './App'
 
-Vue.config.productionTip = false
+import app from '../example/main'
 
-// Vue.use(vueEasyPrint)
+Vue.config.productionTip = true
 
-/* eslint-disable no-new */
 new Vue({
-  el: '#app',
-  components: { App },
-  template: '<App/>'
+    el: '#app',
+    template: '<app/>',
+    components: {
+        app
+    }
 })

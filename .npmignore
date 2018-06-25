@@ -1,0 +1,10 @@
+.DS_Store
+Thumbs.db
+/node_modules/
+/.idea
+/.svn
+/.git
+/build/
+/example/
+/images/
+!.editorconfig

@@ -58,7 +58,8 @@
 </template>
 
 <script>
-import veCalendar from "./vue-easy-calendar/calendar";
+// import veCalendar from "./vue-easy-calendar/calendar";
+import veCalendar from "../src";
 
 export default {
     name: "App",

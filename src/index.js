@@ -1,7 +1,6 @@
-import veCalendar from './vue-easy-calendar/calendar.vue';
-
-veCalendar.install = function(Vue) {
-  Vue.component(veCalendar.name, veCalendar);
-};
-
-export default veCalendar;
+import veCalendar from './lib/ve-calendar.vue'
+export function install(Vue) {
+    Vue.component(veCalendar.name, veCalendar)
+    /* -- Add more components here -- */
+}
+export default veCalendar
