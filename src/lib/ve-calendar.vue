@@ -34,6 +34,7 @@
                     <div class="days-line" v-for="line in 6" :key="`line_${line}`">
                         <div  class="day-grid" @mousedown="dayMouseDown($event,row,line*7-7+index)" @mousemove="dayMouseMove($event,row,line*7-7+index)" @mouseup="dayMouseUp($event,row,line*7-7+index)" :class="{ 
                         gray: row.sMonth!==(currentMonth+1)&&crossMonth===true ,
+                        hide: row.sMonth!==(currentMonth+1)&&overHide===true ,
                         mini:currentMode==='mini',
                         disabled: (row.sMonth!==(currentMonth+1)&&crossMonth===false) || (enabledList.length>0 && enabledList.indexOf(row.sDate)<0) || (disabledList.length>0 && disabledList.indexOf(row.sDate)>=0),
                         selected: row.selected===true,
@@ -162,6 +163,10 @@ export default {
             default() {
                 return [];
             }
+        },
+        overHide: {
+            type: Boolean,
+            default: false
         },
         activateDate: {
             // 激活年月

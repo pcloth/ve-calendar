@@ -142,6 +142,10 @@ input[type="number"].ve-year:hover::-webkit-inner-spin-button {
   color: #c0c4cc;
 }
 
+.day-grid.hide {
+  visibility: hidden;
+}
+
 .day-grid.disabled {
   color: #c0c4cc;
   pointer-events: none;

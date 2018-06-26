@@ -16,6 +16,9 @@
 ## <a href="https://jsfiddle.net/pcloth/Lma8qonh/">View online demo</a>
 
 
+## <a href="https://jsfiddle.net/pcloth/7vq6bfLr/">Year view demo</a>
+
+
 # Current function:
 >1, display the lunar calendar, solar terms, festivals before 2050
 >
@@ -74,6 +77,7 @@ Export default {
 | enabled-list        | array   | []                  | Only allow dates in the list to be selected                                                                                                                                                                      |
 | disabled-list       | array   | []                  | The date in the list cannot be selected, and the enabled-list should not be used at the same time                                                                                                                |
 | cancel-click        | boolean | true                | Whether to allow unchecked clicks                                                                                                                                                                                |
+| over-hide           | boolean | false               | Whether this part of the month is hidden                                                                                                                                                                         |
 
 ## event
 | Name             | Parameter          | Description                                                                                                                                                                                    |

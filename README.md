@@ -15,6 +15,8 @@
 
 ## <a href="https://jsfiddle.net/pcloth/Lma8qonh/">查看在线demo</a>
 
+## <a href="https://jsfiddle.net/pcloth/7vq6bfLr/">年视图demo</a>
+
 
 # 目前功能:
 >1、显示2050年以前的农历、节气、节日
@@ -75,6 +77,7 @@ export default {
 | enabled-list        | array   | []                  | 只允许列表中的日期被选中                                                                                                              |
 | disabled-list       | array   | []                  | 列表中的日期不能被选中，和enabled-list最好不要同时用                                                                                  |
 | cancel-click        | boolean | true                | 是否允许点击取消选中                                                                                                                  |
+| over-hide           | boolean | false               | 超出本月部分是否隐藏                                                                                                                  |
 
 
 ## 事件
