@@ -2,27 +2,29 @@
     <div v-menu="false" v-resize="onResize">
         <div class="ve-calendar" :class="{mini:currentMode==='mini'}" :style="`height:${height}`" >
             <div ref="header" class="header">
-                <div class="ve-button last" @click="lastMonth">
-                    <i class="ve-icon icon-last"></i>
-                </div>
-                <div class="ve-button month">
-                    <div style="width:100%;">
-                        <div class="dropdown" :class="{mini:currentMode==='mini'}" style="">
-                            <span>{{language(`${currentMonth+1}月`)}}</span>
-                            <div class="dropdown-content" :class="{mini:currentMode==='mini'}">
-                                <div class="dropdown-month" :class="{mini:currentMode==='mini',activated:m==(currentMonth+1)}" v-for="m in 12" :key="`dropdown_m${m}`" @click="gotoMonth(m)">{{language(`${m}月`)}}</div>
+                <slot name="header" :year="currentYear" :month="currentMonth+1">
+                    <div class="ve-button last" @click="lastMonth">
+                        <i class="ve-icon icon-last"></i>
+                    </div>
+                    <div class="ve-button month">
+                        <div style="width:100%;">
+                            <div class="dropdown" :class="{mini:currentMode==='mini'}" style="">
+                                <span>{{language(`${currentMonth+1}月`)}}</span>
+                                <div class="dropdown-content" :class="{mini:currentMode==='mini'}">
+                                    <div class="dropdown-month" :class="{mini:currentMode==='mini',activated:m==(currentMonth+1)}" v-for="m in 12" :key="`dropdown_m${m}`" @click="gotoMonth(m)">{{language(`${m}月`)}}</div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="ve-button next" @click="nextMonth">
-                    <i class="ve-icon icon-next"></i>
-                </div>
-                <div class="ve-button year" >
-                    <input v-model="currentYear" @input="changeYear" :min="1900" type="number" class="ve-year" :class="{mini:currentMode==='mini'}">
-                    <span v-show="showErr" style="font-size: 12px;position: absolute;margin-left: 20px;color: rgba(1,1,1,0.3);">{{language('不支持')}}</span>
-                </div>
-                <div class="ve-button today" @click="goToday">{{language('今天')}}</div>
+                    <div class="ve-button next" @click="nextMonth">
+                        <i class="ve-icon icon-next"></i>
+                    </div>
+                    <div class="ve-button year" >
+                        <input v-model="currentYear" @input="changeYear" :min="1900" type="number" class="ve-year" :class="{mini:currentMode==='mini'}">
+                        <span v-show="showErr" style="font-size: 12px;position: absolute;margin-left: 20px;color: rgba(1,1,1,0.3);">{{language('不支持')}}</span>
+                    </div>
+                    <div class="ve-button today" @click="goToday">{{language('今天')}}</div>
+                </slot>
             </div>
             <div ref="body" class="body">
                 <div ref="title" class="week-title">
@@ -306,7 +308,7 @@ export default {
 
         lastMonth() {
             // 跳转上一个月
-            if (this.currentMonth == 0) {
+            if (this.currentMonth === 0) {
                 this.currentYear -= 1;
                 this.currentMonth = 11;
             } else {
@@ -316,7 +318,7 @@ export default {
         },
         nextMonth() {
             // 跳转下一个月
-            if (this.currentMonth == 11) {
+            if (this.currentMonth === 11) {
                 this.currentYear += 1;
                 this.currentMonth = 0;
             } else {
@@ -536,19 +538,6 @@ export default {
             this.$emit("click-event", e, data);
         },
         onResize(ele) {
-            // console.log("test", ele.offsetHeight);
-            // window.tt = this;
-            // window.hh = ele;
-            // let dh =
-            //     ele.offsetHeight -
-            //     (this.$refs.header.offsetHeight +
-            //         this.$refs.title.offsetHeight +
-            //         20);
-
-            // console.log("dh:", this.$refs.days.offsetWidth);
-            // let dh = this.$refs.days.offsetWidth / 7;
-            // this.gridHeight = `${dh}px;`;
-
             if (this.mode !== "auto") {
                 return;
             }

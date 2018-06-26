@@ -25,6 +25,7 @@
   /* justify-content: space-around; */
   align-items: center;
   width: 100%;
+  justify-content: center;
   flex: 0 1 auto;
 }
 

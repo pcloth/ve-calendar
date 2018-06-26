@@ -42,6 +42,7 @@
   /* justify-content: space-around; */
   align-items: center;
   width: 100%;
+  justify-content: center;
   flex: 0 1 auto;
 }
 
@@ -260,8 +261,7 @@ input[type="number"].ve-year:hover::-webkit-inner-spin-button {
 
 .dropdown-content .dropdown-month:hover {
   background-color: #409eff;
-}
-.ve-calendar.mini {
+}.ve-calendar.mini {
   padding: 10px;
 }
 

@@ -1,6 +1,7 @@
 <template>
     <div id="app" >
         <ve-calendar  v-model="selected" :height="height"  :lunar="lunar" :cancel-click="cancelClick" :event="event" :pick-mode="pickMode" :offDays="offDays" :mode="mode" :most-choice="mostChoice" @refresh-calendar="refreshC"   :cross-month="crossMonth" @append-event="appendEvent"  @click-event="clickEvent" >
+            <div slot="header" slot-scope="{year,month}">{{month}}月</div>
             <!--<div slot="day-number" slot-scope="{day}">-->
                 <!--<span :style="day.sMonth===month&&test.indexOf(day.sDay)>=0?'color:red;':''">{{day.sDay}}</span>-->
             <!--</div>-->

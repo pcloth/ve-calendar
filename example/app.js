@@ -6,7 +6,7 @@ import app from '../example/main'
 
 Vue.config.productionTip = true
 
-new Vue({
+window.vm = new Vue({
     el: '#app',
     template: '<app/>',
     components: {
