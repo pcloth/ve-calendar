@@ -49,7 +49,7 @@ export default {
 
 ### 第三步，加载模板:
 ``` html
-<veCalendar v-model="selectDateList"></veCalendar>
+<ve-calendar v-model="selectDateList"></ve-calendar>
 
 ```
 

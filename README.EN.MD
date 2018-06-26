@@ -50,7 +50,7 @@ Export default {
 
 ### The third step, loading the template:
 ``` html
-<veCalendar v-model="selectDateList"></veCalendar>
+<ve-calendar v-model="selectDateList"></ve-calendar>
 
 ```
 
