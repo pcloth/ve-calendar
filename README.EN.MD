@@ -73,6 +73,7 @@ Export default {
 | height              | string  | auto                | The height of the component's rendering.                                                                                                                                                                         |
 | enabled-list        | array   | []                  | Only allow dates in the list to be selected                                                                                                                                                                      |
 | disabled-list       | array   | []                  | The date in the list cannot be selected, and the enabled-list should not be used at the same time                                                                                                                |
+| cancel-click        | boolean | true                | Whether to allow unchecked clicks                                                                                                                                                                                |
 
 ## event
 | Name             | Parameter          | Description                                                                                                                                                                                    |

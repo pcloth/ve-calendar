@@ -19,7 +19,9 @@ const english = {
   "10月": "Oct",
   "11月": "Nov",
   "12月": "Dec",
-  "不支持": "not support",
+  "不支持": "Not support",
+  "左键菜单插槽": "Left menu slot",
+  "添加待办事项": "Add todos"
 
 }
 

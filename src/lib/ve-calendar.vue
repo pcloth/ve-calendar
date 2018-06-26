@@ -22,9 +22,7 @@
                     <input v-model="currentYear" @input="changeYear" :min="1900" type="number" class="ve-year" :class="{mini:currentMode==='mini'}">
                     <span v-show="showErr" style="font-size: 12px;position: absolute;margin-left: 20px;color: rgba(1,1,1,0.3);">{{language('不支持')}}</span>
                 </div>
-
                 <div class="ve-button today" @click="goToday">{{language('今天')}}</div>
-
             </div>
             <div ref="body" class="body">
                 <div ref="title" class="week-title">
@@ -39,10 +37,8 @@
                         selected: row.selected===true,
                         preview:row.preview === true,
                         today:row.sDay===today.getDate() && row.sMonth === (today.getMonth()+1) && row.sYear ===today.getFullYear(),
-                        }" v-for="(row,index) in monthData.slice((line-1)*7,line*7)" :key="`grid_${index}`"
-                        
+                        }" v-for="(row,index) in monthData.slice((line-1)*7,line*7)" :key="`grid_${index}`"                        
                         >
-                        <!-- :style="`height:${gridHeight}`" -->
                             <div class="day-title" :class="{mini:currentMode==='mini'}">
                                 <div class="day-number" :class="{mini:currentMode==='mini'}">
                                     <slot name="day-number" :day="row">
@@ -74,15 +70,14 @@
                      v-show="eventMenuShow"
                      :style="`top:${eventMenuTop}px;left:${eventMenuLeft}px;`">
                         <slot  name="day-event-left-menu" :eventMenuShow="eventMenuShow" :currentEvent="currentEvent">
-                            <div :class="dayEventMenuItem">默认事件</div>
+                            <div :class="dayEventMenuItem">{{language('左键菜单插槽')}}</div>
                         </slot>
                 </div>
-
                 <div :class="dayEventMenu"
                      v-show="eventRightMenuShow"
                      :style="`top:${eventMenuTop}px;left:${eventMenuLeft}px;`">
                     <slot name="day-event-right-menu" :eventRightMenuShow="eventRightMenuShow" :currentEvent="currentEvent">
-                        <div :class="dayEventMenuItem" @click="appendEvent">添加待办事项</div>
+                        <div :class="dayEventMenuItem" @click="appendEvent">{{language('添加待办事项')}}</div>
                     </slot>
                 </div>
             </div>
@@ -182,6 +177,11 @@ export default {
             type: Boolean,
             default: true
         },
+        cancelClick: {
+            // 是否允许点击取消，拖动依然可以取消
+            type: Boolean,
+            default: true
+        },
         rightMenu: {
             // 是否显示鼠标右键
             type: Boolean,
@@ -189,7 +189,7 @@ export default {
         },
         mostChoice: {
             // 最多选择日期数量,0无限
-            type: Number,
+            type: [Number, String],
             default: 0
         },
         crossMonth: {
@@ -363,25 +363,39 @@ export default {
             // 添加事件
             this.$emit("append-event", this.currentEvent.day);
         },
-        dayClick(row) {
-            // 点击某一天
-            // console.log(row);
-            if (
-                // 非挑选切换模式下，超过最大选中项不再操作
-                this.mostChoice < 0 ||
-                (this.pickMode === false &&
-                    this.mostChoice > 0 &&
-                    this.selectedDate.length >= this.mostChoice) ||
-                (this.crossMonth == false &&
-                    this.currentMonth + 1 !== row.sMonth)
-            ) {
-                return;
-            }
+        dayClick(row, uprow) {
+            // 点击或者鼠标按下后滑动到某一天
+            // row 是当前滑动的天，uprow是鼠标左键放开的天
+
+            // 如果最大选择值是负数，不响应任何点击滑动事件
+            if (this.mostChoice < 0) return;
+
             if (row.selected === true) {
+                // 如果当前值选中
+                // 不能取消，并且不是pick模式，不响应
+                if (this.cancelClick === false && this.pickMode === false)
+                    return;
+
+                // 如果禁止取消选中，当前值和鼠标抬起值相同，不响应
+                if (row.sDate === uprow.sDate && this.cancelClick === false)
+                    return;
+
                 row.selected = false;
             } else {
+                // 当前没选中
+                // 并且超过最大选中项目，并且不是pick模式，不响应
+                if (
+                    this.mostChoice > 0 &&
+                    this.selectedDate.length >= this.mostChoice &&
+                    this.pickMode === false
+                ) {
+                    return;
+                }
+
                 row.selected = true;
             }
+
+            // 处理选中后的事项
             let index = this.selectedDate.indexOf(row.sDate);
             if (index >= 0) {
                 // 如果之前已经选中
@@ -446,7 +460,7 @@ export default {
             for (let i in this.monthData) {
                 if (this.monthData[i].preview === true) {
                     this.monthData[i].preview = false;
-                    this.dayClick(this.monthData[i]);
+                    this.dayClick(this.monthData[i], row);
                 }
             }
         },

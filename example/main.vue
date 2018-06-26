@@ -1,6 +1,6 @@
 <template>
     <div id="app" >
-        <ve-calendar  v-model="selected" :height="height" :lunar="lunar" :event="event" :pick-mode="pickMode" :offDays="offDays" :mode="mode" :most-choice="mostChoice" @refresh-calendar="refreshC"   :cross-month="crossMonth" @append-event="appendEvent"  @click-event="clickEvent" >
+        <ve-calendar  v-model="selected" :height="height"  :lunar="lunar" :cancel-click="cancelClick" :event="event" :pick-mode="pickMode" :offDays="offDays" :mode="mode" :most-choice="mostChoice" @refresh-calendar="refreshC"   :cross-month="crossMonth" @append-event="appendEvent"  @click-event="clickEvent" >
             <!--<div slot="day-number" slot-scope="{day}">-->
                 <!--<span :style="day.sMonth===month&&test.indexOf(day.sDay)>=0?'color:red;':''">{{day.sDay}}</span>-->
             <!--</div>-->
@@ -15,10 +15,10 @@
                 <div @click="deleteEvent(currentEvent.item)" class="day-event-menu-item">使用插槽控制菜单</div>
             </div>
 
-            <div slot="day-event-right-menu" slot-scope="{currentEvent,eventRightMenuShow}" >
+            <!-- <div slot="day-event-right-menu" slot-scope="{currentEvent,eventRightMenuShow}" >
                 <div v-if="currentEvent.day">{{currentEvent.day.sDate}}</div>
                 <div class="day-event-menu-item">右键插槽控制菜单</div>
-            </div>
+            </div> -->
 
         </ve-calendar>
         <div class="demo-div" >
@@ -43,6 +43,7 @@
 
             <div>
                 <button @click="event=!event">事件开关{{event}}</button>
+                <button @click="cancelClick=!cancelClick">允许取消选中{{cancelClick}}</button>
                 <button @click="lunar=!lunar">农历{{lunar}}</button>
                 <button @click="pickMode=!pickMode">挑选模式{{pickMode}}</button>
                 <button @click="crossMonth=!crossMonth">跨月选择{{crossMonth}}</button>
@@ -74,6 +75,7 @@ export default {
             pickMode: false,
             mostChoice: 0,
             crossMonth: true,
+            cancelClick: true,
             event: true,
             activateDate: {
                 year: 2017,
