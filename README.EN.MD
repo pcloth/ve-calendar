@@ -31,7 +31,8 @@
 >5, Multi-language support
 >
 >6, two size display modes
-
+>
+>7, Add year view component (version 0.2.0+)
 
 ## Quick Start
 
@@ -53,7 +54,11 @@ Export default {
 
 ### The third step, loading the template:
 ``` html
+<!-- calendar -->
 <ve-calendar v-model="selectDateList"></ve-calendar>
+
+<!-- year -->
+<ve-year v-model="selectDateList"></ve-year>
 
 ```
 
