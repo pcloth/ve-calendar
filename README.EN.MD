@@ -78,6 +78,7 @@ Export default {
 | disabled-list       | array   | []                  | The date in the list cannot be selected, and the enabled-list should not be used at the same time                                                                                                                |
 | cancel-click        | boolean | true                | Whether to allow unchecked clicks                                                                                                                                                                                |
 | over-hide           | boolean | false               | Whether this part of the month is hidden                                                                                                                                                                         |
+| select-mode | string | list | Select mode, list mode means that each item needs to be clicked or dragged by the user; the range means that the user only needs to click the start date and end date, the middle date will be selected, and the value will only output the start date and end date (the most selected invalid |
 
 ## event
 | Name             | Parameter          | Description                                                                                                                                                                                    |

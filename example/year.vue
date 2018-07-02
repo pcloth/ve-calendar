@@ -1,18 +1,23 @@
 <template>
     <div>
-        <div class="col-3" v-for="m in 12" :key="m">
-            <ve-calendar mode="mini" style="padding:5px;" :event="false" :right-menu="false" :activate-date="{year:year,month:m}" height="300px" :over-hide="true" :lunar="false">
-                <div slot="header" slot-scope="{year,month}">{{month}}月</div>
-            </ve-calendar>
-        </div>
+        <ve-year mode="mini" style="padding:5px;" :event="false" :right-menu="false"  :over-hide="true" :lunar="false" select-mode="list">
+            <!-- <div slot="header" slot-scope="{year,month}">{{month}}月</div> -->
+        </ve-year>
     </div>
 </template>
 
 <script>
-import veCalendar from "../src";
+import veYear from "../src/lib/ve-year";
 
 export default {
-    props: {},
+    props: {
+        // value:{
+        //     type:Array,
+        //     default(){
+        //         return []
+        //     }
+        // }
+    },
     data() {
         return {
             year: 2018
@@ -25,14 +30,11 @@ export default {
     updated() {},
     methods: {},
     components: {
-        veCalendar
+        veYear
     }
 };
 </script>
 
 <style scoped>
-.col-3 {
-    width: calc(((100% - 25px) / 3));
-    display: inline-block;
-}
+
 </style>

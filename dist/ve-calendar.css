@@ -355,3 +355,8 @@ input[type="number"].ve-year.mini:hover::-webkit-inner-spin-button {
   width: auto;
 }
 
+
+.col-3[data-v-7c75ff9b] {
+    width: calc(((100% - 25px) / 3));
+    display: inline-block;
+}

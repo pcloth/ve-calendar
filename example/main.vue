@@ -1,6 +1,8 @@
 <template>
     <div id="app" >
-        <ve-calendar  v-model="selected" :height="height"  :lunar="lunar" :cancel-click="cancelClick" :event="event" :pick-mode="pickMode" :offDays="offDays" :mode="mode" :most-choice="mostChoice" @refresh-calendar="refreshC"   :cross-month="crossMonth" @append-event="appendEvent"  @click-event="clickEvent" >
+        <ve-calendar  v-model="selected" :height="height"  @change="changeSelected" :lunar="lunar" :cancel-click="cancelClick" :event="event" :pick-mode="pickMode" :offDays="offDays" :mode="mode" :most-choice="mostChoice" @refresh-calendar="refreshC"   :cross-month="crossMonth" @append-event="appendEvent"  
+        :select-mode="selectMode"
+        @click-event="clickEvent" >
             <!-- <div slot="header" slot-scope="{year,month}">{{month}}月</div> -->
             <!--<div slot="day-number" slot-scope="{day}">-->
                 <!--<span :style="day.sMonth===month&&test.indexOf(day.sDay)>=0?'color:red;':''">{{day.sDay}}</span>-->
@@ -75,6 +77,7 @@ export default {
             offDays: [],
             pickMode: false,
             mostChoice: 0,
+            selectMode:"range",
             crossMonth: true,
             cancelClick: true,
             event: true,
@@ -108,6 +111,9 @@ export default {
         },
         appendEvent(day) {
             console.log("appendEvent", day);
+        },
+        changeSelected(a,b,c){
+            console.log(a,b,c);
         }
     },
     mounted() {

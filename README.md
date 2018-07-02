@@ -30,6 +30,10 @@
 >5、多语言支持，默认中文
 >
 >6、两种尺寸显示模式
+>
+>7、添加年视图组件(ver 0.2.0+)
+
+
 
 ## 快速开始
 
@@ -51,7 +55,11 @@ export default {
 
 ### 第三步，加载模板:
 ``` html
+<!-- 日历组件 -->
 <ve-calendar v-model="selectDateList"></ve-calendar>
+
+<!-- 年视图组件 -->
+<ve-year v-model="selectDateList"></ve-year>
 
 ```
 
@@ -78,7 +86,7 @@ export default {
 | disabled-list       | array   | []                  | 列表中的日期不能被选中，和enabled-list最好不要同时用                                                                                  |
 | cancel-click        | boolean | true                | 是否允许点击取消选中                                                                                                                  |
 | over-hide           | boolean | false               | 超出本月部分是否隐藏                                                                                                                  |
-
+| select-mode | string | list | 选择模式，list模式表示选中项每一个都需要用户点击或者拖动；range表示用户只需要点击开始日期和结束日期，中间日期会被选中，value值会只输出开始日期和结束日期(most-choice失效) |
 
 ## 事件
 | 名字             | 参数                   | 说明                                                                                                            |

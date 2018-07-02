@@ -179,6 +179,13 @@ export default {
                 };
             }
         },
+        selectMode: {
+            // 选择模式
+            // range 只需要点击2次，会选中区间全部值，首尾模式下，输出默认变为2个[start,end]
+            // list 用鼠标控制，点击选中的或者拖动选中的生效
+            type: String,
+            default: "list"
+        },
         pickMode: {
             // 切换模式
             type: Boolean,
@@ -247,7 +254,8 @@ export default {
             eventRightMenuShow: false, // 右键菜单
             eventMenuTop: 0,
             eventMenuLeft: 0,
-            gridHeight: "auto"
+            gridHeight: "auto",
+            selectedRange: []
         };
     },
     computed: {},
@@ -257,6 +265,7 @@ export default {
             this.checkSelected();
         },
         selectedDate() {
+            // console.log("out selectedDate", this.selectedDate);
             this.$emit("input", this.selectedDate);
             this.$emit("change", this.selectedDate);
         },
@@ -453,6 +462,7 @@ export default {
             if (
                 this.mouseLeftHold === true &&
                 index != this.mouseHoldLastIndex &&
+                this.selectMode === "list" &&
                 ((this.crossMonth === false &&
                     this.currentMonth + 1 === row.sMonth) ||
                     this.crossMonth === true)
@@ -461,15 +471,40 @@ export default {
                 this.mouseHoldLastIndex = index;
             }
         },
+
         dayMouseUp(e, row, index) {
             this.mouseLeftHold = false;
-
-            for (let i in this.monthData) {
-                if (this.monthData[i].preview === true) {
-                    this.monthData[i].preview = false;
-                    this.dayClick(this.monthData[i], row);
+            if (index === undefined) return;
+            if (this.selectMode === "list") {
+                for (let i in this.monthData) {
+                    if (this.monthData[i].preview === true) {
+                        this.monthData[i].preview = false;
+                        this.dayClick(this.monthData[i], row);
+                    }
                 }
             }
+
+            if (this.selectMode === "range") {
+                if (this.selectedRange.length < 2) {
+                    this.selectedRange.push(row.sDate);
+                } else {
+                    // 重选
+                    this.selectedRange = [row.sDate];
+                    this.unAllSelected();
+                }
+                if (this.selectedRange.length === 2) {
+                    let range = this.selectedRange.sort();
+                    range = [range[0], range[range.length - 1]];
+                    this.selectedDate = JSON.parse(JSON.stringify(range));
+                }
+            }
+
+            this.$emit('mouse-up',e,row,index)
+        },
+        unAllSelected() {
+            this.monthData.forEach(element => {
+                element.selected = false;
+            });
         },
         dayEventEnter() {
             // 鼠标浮动在事件区域，禁用选择日期
@@ -515,14 +550,41 @@ export default {
         },
         checkSelected() {
             // 检查当前选择
+
             for (let i in this.monthData) {
                 if (typeof this.monthData[i] === "object") {
-                    if (
-                        this.selectedDate.indexOf(this.monthData[i].sDate) >= 0
-                    ) {
-                        this.monthData[i].selected = true;
-                    } else {
-                        this.monthData[i].selected = false;
+                    if (this.selectMode === "list") {
+                        // 鼠标选择模式
+                        if (
+                            this.selectedDate.indexOf(
+                                this.monthData[i].sDate
+                            ) >= 0
+                        ) {
+                            this.monthData[i].selected = true;
+                        } else {
+                            this.monthData[i].selected = false;
+                        }
+                    }
+
+                    if (this.selectMode === "range") {
+                        // 首位模式
+                        let range = JSON.parse(
+                            JSON.stringify(this.selectedDate)
+                        ).sort();
+                        range = [range[0], range[range.length - 1]];
+                        let thisDate = new Date(
+                            this.monthData[i].sDate
+                        ).getTime();
+                        const start = new Date(
+                            `${range[0]} 00:00:00`
+                        ).getTime();
+                        const end = new Date(`${range[1]} 23:59:59`).getTime();
+                        this.monthData[i].preview = false;
+                        if (thisDate >= start && thisDate <= end) {
+                            this.monthData[i].selected = true;
+                        } else {
+                            this.monthData[i].selected = false;
+                        }
                     }
                 }
             }

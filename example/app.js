@@ -18,6 +18,10 @@ let router = new Router({
             component: (resolve) => require.ensure(['./year.vue'], () => { resolve(require('./year.vue')) }),
         },
         {
+            path: '/datepicker', 
+            component: (resolve) => require.ensure(['./datepicker.vue'], () => { resolve(require('./datepicker.vue')) }),
+        },
+        {
             path: '/',
             redirect: '/index'
         }

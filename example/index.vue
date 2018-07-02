@@ -5,6 +5,7 @@
             <div class="col">
                 <div class="button" @click="$router.push('index')">标准视图</div>
                 <div class="button" @click="$router.push('year')">年视图</div>
+                <div class="button" @click="$router.push('datepicker')">日期选择器</div>
             </div>
         </div>
         <transition name="custom-classes-transition" leave-active-class="animated bounceOutRight" mode="out-in">
