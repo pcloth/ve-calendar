@@ -1,6 +1,6 @@
 <template>
     <div id="app" >
-        <ve-calendar  v-model="selected" :height="height"  @change="changeSelected" :lunar="lunar" :cancel-click="cancelClick" :event="event" :pick-mode="pickMode" :offDays="offDays" :mode="mode" :most-choice="mostChoice" @refresh-calendar="refreshC"   :cross-month="crossMonth" @append-event="appendEvent"  
+        <ve-calendar  v-model="selected" :height="height"  @change="changeSelected" :lunar="lunar" :cancel-click="cancelClick" :event="event" :pick-mode="pickMode" :offDays="offDays" :mode="mode" :most-choice="mostChoice" @refresh-calendar="refreshC"   :cross-month="crossMonth" @append-event="appendEvent"  :activate-date="activateDate"
         :select-mode="selectMode"
         @click-event="clickEvent" >
             <!-- <div slot="header" slot-scope="{year,month}">{{month}}月</div> -->
@@ -82,8 +82,8 @@ export default {
             cancelClick: true,
             event: true,
             activateDate: {
-                year: 2017,
-                month: 6
+                year: 2018,
+                month: 1
             },
             height: "500px",
             month: 6,

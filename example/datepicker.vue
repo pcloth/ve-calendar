@@ -1,11 +1,12 @@
 <template>
     <div>
         <ve-date-picker></ve-date-picker>
+        <div>test</div>
     </div>
 </template>
 
 <script>
-import veDatePicker from '../src/lib/ve-date-picker.vue'
+import veDatePicker from '../src/lib/ve-date-picker'
 
 export default {
     props:{},

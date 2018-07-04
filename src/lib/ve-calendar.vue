@@ -30,6 +30,7 @@
                 <div ref="title" class="week-title">
                     <div class="title-grid" v-for="week in weekTitleData" :key="week">{{language(week)}}</div>
                 </div>
+                
                 <div ref="days" class="days">
                     <div class="days-line" v-for="line in 6" :key="`line_${line}`">
                         <div  class="day-grid" @mousedown="dayMouseDown($event,row,line*7-7+index)" @mousemove="dayMouseMove($event,row,line*7-7+index)" @mouseup="dayMouseUp($event,row,line*7-7+index)" :class="{ 
@@ -90,7 +91,8 @@
 </template>
 
 <script>
-import lunar from "./js/lunar";
+import cd from "./js/calendar";
+
 import english from "./js/language";
 import resize from "vue-resize-directive";
 
@@ -265,7 +267,6 @@ export default {
             this.checkSelected();
         },
         selectedDate() {
-            // console.log("out selectedDate", this.selectedDate);
             this.$emit("input", this.selectedDate);
             this.$emit("change", this.selectedDate);
         },
@@ -340,20 +341,21 @@ export default {
             }
             this.makeCalendar();
         },
-        getLunar(day, length = 10) {
+        getLunar(day, length = 999) {
             // 显示节气、节日、农历
             if (day.color) day.color = this.defHolidayColor;
             let lunar =
                 day.solarTerms ||
                 day.solarFestival ||
                 day.lunarFestival ||
-                (day.lDay == 1 ? day.lMonthChinese : day.lDayChinese);
+                (day.lDay == 1 ? day.lMonthChinese : day.lDayChinese) || '';
             return lunar.substr(0, length);
         },
 
         makeCalendar() {
             // 制作当前月份的日历数据
-            let data = new lunar(this.currentYear, this.currentMonth);
+            // let data = new lunar(this.currentYear, this.currentMonth);
+            let data = cd.fullMonthCalendar(this.currentYear, this.currentMonth)
             this.monthData = this.combinedData(data);
             this.checkSelected();
             this.$emit(
@@ -470,6 +472,34 @@ export default {
                 row.preview = true;
                 this.mouseHoldLastIndex = index;
             }
+
+            if (this.selectMode === "range" && this.selectedRange.length==1) {
+                const start = new Date(`${this.selectedRange[0]} 00:00:00`).getTime();
+                const start_end = new Date(`${this.selectedRange[0]} 23:59:59`).getTime();
+                const now = new Date(`${row.sDate} 00:00:00`).getTime();
+                const now_end = new Date(`${row.sDate} 23:59:59`).getTime();
+                let thisDate
+                this.monthData.forEach(element => {
+                    thisDate = new Date(element.sDate).getTime();
+                    if(now>=start){
+                        if( thisDate >= start && thisDate<=now_end ){
+                            element.preview = true
+                        }else{
+                            element.preview = false
+                        }
+                    }
+
+                    if(now<start){
+                        if( thisDate < start_end && thisDate>=now ){
+                            element.preview = true
+                        }else{
+                            element.preview = false
+                        }
+                    }
+
+                    
+                });
+            }
         },
 
         dayMouseUp(e, row, index) {
@@ -541,7 +571,7 @@ export default {
                 return;
             }
             this.currentYear = parseInt(this.currentYear);
-            if (this.currentYear > 1900 && this.currentYear <= 2050) {
+            if (this.currentYear > 1900 && this.currentYear < 2100) {
                 this.showErr = false;
                 this.makeCalendar();
             } else {
