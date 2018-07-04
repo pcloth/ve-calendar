@@ -20,7 +20,7 @@
 
 
 # Current function:
->1, display the lunar calendar, solar terms, festivals before 2050
+>1, display the lunar calendar, solar terms, festivals before 2100
 >
 >2, can specify the maximum number of selected dates
 >
