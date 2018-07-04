@@ -32,7 +32,7 @@
 >
 >6, two size display modes
 >
->7, Add year view component (version 0.2.0+)
+>7, Add year view component (version 0.3.0+)
 
 ## Quick Start
 
