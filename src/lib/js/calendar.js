@@ -559,31 +559,142 @@ var calendar = {
                 }
             }
         }
-
-
-        // //复活节只出现在3或4月
-        // if (m == 2 || m == 3) {
-        //     var estDay = new easter(y);
-        //     if (m == estDay.m)
-        //         this[estDay.d - 1].solarFestival = this[estDay.d - 1].solarFestival + ' 复活节 Easter Sunday';
-        // }
-
-
-        // if (m == 2) this[20].solarFestival = this[20].solarFestival + unescape('%20%u6D35%u8CE2%u751F%u65E5');
-
-        
     },
 
     /**
-     * 周节日和黑色星期五
+     * 东正教复活节
+     */
+    getEasterDay: function (year) {
+        let N = year - 1900;
+        let A = N % 19;
+        let Q = N / 4;
+        let B = (7 * A + 1) / 19;
+        let M = (11 * A + 4 - B) % 29;
+        let W = (N + Q + 31 - M) % 7;
+        let result = 25 - M - W;
+
+        let r = {year:year}
+
+        if (result == 0) {
+            r.month = 3;
+            r.day = 31;
+        } else if (result > 0) {
+            r.month = 4;
+            r.day = result;
+        } else {
+            r.month = 3;
+            r.day = (31 + result);
+        }
+        return r;
+    },
+
+    /**
+     * 复活节高斯算法
+     */
+    easter: function (x) {
+        function preyear(x) {
+            var theDate = new Date();
+            if (x == 'xxx') {
+                x = theDate.getYear();
+                if (navigator.appName == 'Netscape') {
+                    x += 1900;
+                }
+            } else {
+                x = parseInt(x, 10)
+            };
+            if (x < 1583) {
+                x = 1583
+            };
+            return x;
+        }
+        function century(x) {
+            var tmp = Math.floor(preyear(x) / 100) + 1;
+            return tmp;
+        }
+        function syn(x) {
+            var tmp = Math.floor((8 * century(x) + 5) / 25) - 5;
+            return tmp;
+        }
+        function drop(x) {
+            var tmp = Math.floor(3 * century(x) / 4) - 12;
+            return tmp;
+        }
+        function golden(x) {
+            var tmp = (preyear(x) % 19) + 1;
+            return tmp;
+        }
+        function ep(x) {
+            var gd = golden(x);
+            var epact = (11 * gd + 20 + syn(x) - drop(x)) % 30;
+            if (epact < 0) {
+                epact += 30
+            };
+            if ((epact == 25) && (golden > 11)) {
+                epact++
+            };
+            if (epact == 24) {
+                epact++
+            };
+            return epact;
+        }
+        function fs(x) {
+            var year = preyear(x);
+            var tmp = Math.floor(5 * year / 4) - drop(year) - 10;
+            return tmp;
+        }
+        function sun_march(x) {
+            return ((-fs(x)) % 7) + 7;
+        }
+        function fm(x) {
+            var year = preyear(x);
+            var f = 44 - ep(year);
+            if (f > 30) {
+                f -= 30
+            };
+            return f;
+        }
+        function mpost(x) {
+            var tmp = fm(x);
+            if (tmp < 21) {
+                tmp += 30
+            };
+            return tmp;
+        }
+        function fmoon(x) {
+            var tmp = mpost(x);
+            var fsun = fs(x);
+            return (tmp + 7) - ((fsun + tmp) % 7);
+        }
+        var year = preyear(x);
+        var fullmoon = fmoon(x);
+        var msg
+        if (fullmoon > 31) {
+            msg = { year:year,month:4,day:(fullmoon - 31)}
+        } else {
+            msg = { year:year,month:3,day:fullmoon }
+        };
+        return msg;
+    },
+
+    /**
+     * 周节日、黑色星期五、复活节等需要一个月计算一次的特殊节日
+     * @param obj 传入的当月日期列表数据
      */
     getFestivalMonthObject: function (obj) {
-        // console.log(obj,typeof obj);
+
+        // 复活节只出现在3或4月
+        if (obj[0].sMonth == 3 || obj[0].sMonth == 4) {
+            let easter = this.easter(obj[0].sYear)
+            // let easter = this.getEasterDay(obj[0].sYear) // 东正教
+            if (easter.month === obj[0].sMonth && obj[easter.day - 1].sDay === easter.day) {
+                obj[easter.day - 1].solarFestival += '复活节'
+            }
+        }
+
         //月周节日
         for (let i in this.wFtv) {
             if (this.wFtv[i].match(/^(\d{2})(\d)(\d)([\s\*])(.+)$/))
-                if (Number(RegExp.$1) == obj[0].sMonth
-                ) {
+                if (Number(RegExp.$1) == obj[0].sMonth) {
                     let tmp1 = Number(RegExp.$2);
                     let tmp2 = Number(RegExp.$3);
 
@@ -755,7 +866,7 @@ var calendar = {
             'isLeap': isLeap,
             'nWeek': nWeek,
             'week': cWeek, // 中文周
-            'weekCount':0,
+            'weekCount': 0,
             'isTerm': isTerm, // 是否节气
             'solarTerms': Term, // 节气
             'solarFestival': '',
@@ -840,22 +951,22 @@ var calendar = {
         // m=m-1
         let arr = []
         let sDObj = new Date(y, m, 1, 0, 0, 0, 0); //当月一日日期
-        
+
         let length = this.solarDays(y, m); //公历当月天数
 
         // console.log('sDObj',sDObj.toLocaleDateString(),length);
         arr.firstWeek = sDObj.getDay(); //公历当月1日星期几
-        let thisDay,weekcount={}
+        let thisDay, weekcount = {}
         for (let i = 1; i < length + 1; i++) {
             //solar2lunar接收的月份是真实月份，这里的m传入时-1了，所以要加回来
-            
+
             thisDay = calendar.solar2lunar(y, m + 1, i)
             // console.log(y,m,i,thisDay);
             // 统计星期几出现的次数
             if (weekcount[thisDay.week]) {
-                weekcount[thisDay.week]++ 
+                weekcount[thisDay.week]++
             } else {
-                weekcount[thisDay.week] =1
+                weekcount[thisDay.week] = 1
             }
             thisDay.weekCount = weekcount[thisDay.week]
             arr.push(thisDay)
@@ -871,7 +982,10 @@ var calendar = {
      */
     fullMonthCalendar: function (y, m) {
         // m=m-1
-        let last_y = y, last_m = m, next_y = y, next_m = m;
+        let last_y = y,
+            last_m = m,
+            next_y = y,
+            next_m = m;
         if (m == 0) {
             last_y = y - 1
             last_m = 11
@@ -887,8 +1001,9 @@ var calendar = {
         var lastM = this.monthCalendar(last_y, last_m)
         var thisM = this.monthCalendar(y, m)
         var nextM = this.monthCalendar(next_y, next_m)
-    
-        let ret = [], index = 0;
+
+        let ret = [],
+            index = 0;
         for (let i in lastM) {
             if (i >= lastM.length - thisM.firstWeek) {
                 ret.push(lastM[i])
@@ -902,7 +1017,7 @@ var calendar = {
                 index += 1
             }
         }
-    
+
         for (let i in nextM) {
             if (index < 42) {
                 ret.push(nextM[i])
