@@ -84,6 +84,8 @@ Export default {
 | cancel-click        | boolean | true                | Whether to allow unchecked clicks                                                                                                                                                                                |
 | over-hide           | boolean | false               | Whether this part of the month is hidden                                                                                                                                                                         |
 | select-mode | string | list | Select mode, list mode means that each item needs to be clicked or dragged by the user; the range means that the user only needs to click the start date and end date, the middle date will be selected, and the value will only output the start date and end date (the most selected invalid |
+| min | string | null | If there is a min value of '2018-07-05', it means that only days after the date of 2018-07-05 are allowed to be selected. |
+| max | string | null | If there is a min value of '2018-07-05', it means that only days from the date of 2018-07-05 are allowed to be selected. |
 
 ## event
 | Name             | Parameter          | Description                                                                                                                                                                                    |

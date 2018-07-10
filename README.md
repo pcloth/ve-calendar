@@ -87,6 +87,8 @@ export default {
 | cancel-click        | boolean | true                | 是否允许点击取消选中                                                                                                                  |
 | over-hide           | boolean | false               | 超出本月部分是否隐藏                                                                                                                  |
 | select-mode | string | list | 选择模式，list模式表示选中项每一个都需要用户点击或者拖动；range表示用户只需要点击开始日期和结束日期，中间日期会被选中，value值会只输出开始日期和结束日期(most-choice失效) |
+| min | string | null | 如果有min值'2018-07-05'，表示只允许选中从2018-07-05日期之后的日子。 |
+| max | string | null | 如果有min值'2018-07-05'，表示只允许选中从2018-07-05日期之前的日子。 |
 
 ## 事件
 | 名字             | 参数                   | 说明                                                                                                            |

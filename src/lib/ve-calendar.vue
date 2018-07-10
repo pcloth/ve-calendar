@@ -37,7 +37,9 @@
                         gray: row.sMonth!==(currentMonth+1)&&crossMonth===true ,
                         hide: row.sMonth!==(currentMonth+1)&&overHide===true ,
                         mini:currentMode==='mini',
-                        disabled: (row.sMonth!==(currentMonth+1)&&crossMonth===false) || (enabledList.length>0 && enabledList.indexOf(row.sDate)<0) || (disabledList.length>0 && disabledList.indexOf(row.sDate)>=0),
+                        
+                        disabled: (row.sMonth!==(currentMonth+1)&&crossMonth===false) || (enabledList.length>0 && enabledList.indexOf(row.sDate)<0) || (disabledList.length>0 && disabledList.indexOf(row.sDate)>=0) ||
+                        hasRange(row.sDate),
                         selected: row.selected===true,
                         preview:row.preview === true,
                         today:row.sDay===today.getDate() && row.sMonth === (today.getMonth()+1) && row.sYear ===today.getFullYear(),
@@ -121,6 +123,14 @@ export default {
             // 显示模型
             type: String,
             default: "normal"
+        },
+        max:{
+            type:String,
+            default:''
+        },
+        min:{
+            type:String,
+            default:''
         },
         offDays: {
             // 工作休息日
@@ -331,6 +341,7 @@ export default {
             }
             this.makeCalendar();
         },
+
         nextMonth() {
             // 跳转下一个月
             if (this.currentMonth === 11) {
@@ -376,6 +387,20 @@ export default {
                 }
             }
             return data;
+        },
+        hasRange(thisDay){
+            // 限定可选范围
+            let min,max;
+            thisDay = new Date(thisDay).getTime();
+            try {
+                if(this.min) min = new Date(this.min + ' 00:00:00').getTime();
+                if(this.max) max = new Date(this.max + ' 23:59:59').getTime();
+                if(min && min>thisDay) return true;
+                if(max && max<thisDay) return true;
+                return false;
+            } catch (error) {
+                return false
+            }
         },
         appendEvent() {
             // 添加事件
